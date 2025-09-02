@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacto - Green Limon</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Distribuidora Green Limon</div>
+            <ul>
+                <li><a href="{% url 'index' %}">Inicio</a></li>
+                <li><a href="{% url 'productos' %}">Productos</a></li>
+                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
+                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                <li><a href="{% url 'contacto' %}">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="content">
+        <h1>Contáctanos</h1>
+        <p>Para más información o cotizaciones, escríbenos directamente:</p>
+        <a href="https://wa.me/56912345678" target="_blank" class="btn">Escribir por WhatsApp</a>
+        <p>O mándanos un correo: contacto@greenlimon.cl</p>
+    </section>
+</body>
+</html>

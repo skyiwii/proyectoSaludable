@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos - Green Limon</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Distribuidora Green Limon</div>
+            <ul>
+                <li><a href="{% url 'index' %}">Inicio</a></li>
+                <li><a href="{% url 'productos' %}">Productos</a></li>
+                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
+                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                <li><a href="{% url 'contacto' %}">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="products">
+        <h1>Nuestros Productos</h1>
+        <div class="product-list">
+            <div class="product-card">
+                <img src="{% static 'images/product1.jpg' %}" alt="Producto 1">
+                <h3>Producto 1</h3>
+                <p>Lorem ipsum dolor sit amet.</p>
+                <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
+            </div>
+            <div class="product-card">
+                <img src="{% static 'images/product2.jpg' %}" alt="Producto 2">
+                <h3>Producto 2</h3>
+                <p>Lorem ipsum dolor sit amet.</p>
+                <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
+            </div>
+            <div class="product-card">
+                <img src="{% static 'images/product3.jpg' %}" alt="Producto 3">
+                <h3>Producto 3</h3>
+                <p>Lorem ipsum dolor sit amet.</p>
+                <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

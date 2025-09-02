@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nosotros - Green Limon</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Distribuidora Green Limon</div>
+            <ul>
+                <li><a href="{% url 'index' %}">Inicio</a></li>
+                <li><a href="{% url 'productos' %}">Productos</a></li>
+                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
+                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                <li><a href="{% url 'contacto' %}">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="content">
+        <h1>Sobre Nosotros</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+        Suspendisse potenti. Praesent fermentum est in turpis gravida, 
+        a ullamcorper odio tempor.</p>
+    </section>
+</body>
+</html>
