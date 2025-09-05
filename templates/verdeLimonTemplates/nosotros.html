@@ -5,16 +5,20 @@
     <meta charset="UTF-8">
     <title>Nosotros - Green Limon</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Ícono pestaña -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
     <header>
         <nav class="navbar">
-            <div class="logo">Distribuidora Green Limon</div>
+            <div class="logo">
+                <img src="{% static 'images/limon.png' %}" alt="Logo Green Limon" class="logo-img">
+                <span>Distribuidora Green Limon</span>
+            </div>
             <ul>
                 <li><a href="{% url 'index' %}">Inicio</a></li>
                 <li><a href="{% url 'productos' %}">Productos</a></li>
                 <li><a href="{% url 'distribucion' %}">Distribución</a></li>
-                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
                 <li><a href="{% url 'contacto' %}">Contacto</a></li>
             </ul>
         </nav>

@@ -5,28 +5,26 @@
     <meta charset="UTF-8">
     <title>Distribución - Green Limon</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Ícono pestaña -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
+    <!-- Navbar -->
     <header>
         <nav class="navbar">
-            <div class="logo">Distribuidora Green Limon</div>
+            <div class="logo">
+                <img src="{% static 'images/limon.png' %}" alt="Logo Green Limon" class="logo-img">
+                <span>Distribuidora Green Limon</span>
+            </div>
             <ul>
                 <li><a href="{% url 'index' %}">Inicio</a></li>
                 <li><a href="{% url 'productos' %}">Productos</a></li>
-                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
-                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                <li><a href="{% url 'nosotros' %}">Sobre nosotros</a></li>
                 <li><a href="{% url 'contacto' %}">Contacto</a></li>
             </ul>
         </nav>
     </header>
 
+    <!-- Contenido -->
     <section class="content">
         <h1>Nuestra Distribución</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-        Sed vitae purus eu eros tristique facilisis. Proin ultrices 
-        quam a purus consequat, et placerat sem fermentum.</p>
-        <h2>Nuestras localidades</h2>
-        <p>Puedes ver todas nuestras tiendas pinchando aquí <a href="">ubicaciones</a></p>
-    </section>
-</body>
-</html>
