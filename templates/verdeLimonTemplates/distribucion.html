@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <title>Distribución - Green Limon</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <!-- Ícono pestaña -->
+    <link rel="stylesheet" href="{% static 'css/distribucion.css' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- Navbar global -->
     <header>
         <nav class="navbar">
             <div class="logo">
@@ -25,6 +25,76 @@
         </nav>
     </header>
 
-    <!-- Contenido -->
-    <section class="content">
+    <!-- Contenido Distribución -->
+    <section class="distribucion-content">
         <h1>Nuestra Distribución</h1>
+        <p>
+            Explora nuestros centros, kioscos, supermercados y bazares. Cada lugar ofrece productos naturales y saludables, seleccionados para cuidar tu alimentación y bienestar.
+        </p>
+
+        <!-- Menú único de selección -->
+        <div class="selector-lugar">
+            <label for="lugar">Selecciona un lugar:</label>
+            <select id="lugar" onchange="mostrarDetalle()">
+                <option value="">-- Selecciona --</option>
+                {% for lugar in ubicaciones %}
+                    <option value="{{ forloop.counter0 }}">
+                        {{ lugar.tipo }} - {{ lugar.nombre }} - {{ lugar.ciudad }}{% if lugar.direccion_corta %} - {{ lugar.direccion_corta }}{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Detalle del lugar -->
+        <div id="detalle-lugar" class="detalle-lugar" style="display:none;">
+            <img id="detalle-imagen" src="" alt="">
+            <div class="detalle-texto">
+                <h2 id="detalle-nombre"></h2>
+                <p id="detalle-ciudad" class="ciudad"></p>
+                <p id="detalle-tipo" class="tipo"></p>
+                <p id="detalle-direccion" class="direccion"></p>
+                <p id="detalle-descripcion" class="descripcion"></p>
+                <ul id="detalle-productos" class="productos"></ul>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Pasar los datos de Python a JS
+        const lugares = {{ ubicaciones|safe }};
+
+        function mostrarDetalle() {
+            const select = document.getElementById("lugar");
+            const index = select.value;
+
+            if (index === "") {
+                document.getElementById("detalle-lugar").style.display = "none";
+                return;
+            }
+
+            const lugar = lugares[index];
+
+            document.getElementById("detalle-nombre").textContent = lugar.nombre;
+            document.getElementById("detalle-ciudad").textContent = "Ciudad: " + lugar.ciudad;
+            document.getElementById("detalle-tipo").textContent = "Tipo: " + lugar.tipo;
+            document.getElementById("detalle-direccion").textContent = "Dirección: " + (lugar.direccion_completa || "");
+            document.getElementById("detalle-imagen").src = "{% static '' %}" + lugar.imagen;
+            document.getElementById("detalle-imagen").alt = lugar.nombre;
+            document.getElementById("detalle-descripcion").textContent = lugar.descripcion;
+
+            // Productos (si existen)
+            const ul = document.getElementById("detalle-productos");
+            ul.innerHTML = "";
+            if (lugar.productos && lugar.productos.length > 0) {
+                lugar.productos.forEach(prod => {
+                    const li = document.createElement("li");
+                    li.textContent = prod;
+                    ul.appendChild(li);
+                });
+            }
+
+            document.getElementById("detalle-lugar").style.display = "flex";
+        }
+    </script>
+</body>
+</html>
