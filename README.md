@@ -229,3 +229,20 @@ Los datos cargados fueron: ubicaciones = [
             "productos": ["Frutas frescas", "Frutos secos", "Bebidas naturales"]
         }
     ]
+
+Dia 3:
+
+Acción 1:
+
+Se agregó el archivo de texto requirements.txt con el comando pip3 freeze > requirements.txt
+
+Acción 1.1:
+
+Se agregó el login/registro básico con datos dummy precargados para simular el inicio y sesión de usuarios/admin
+
+Está sujeto a cambios del lado de administradores.
+
+Acción 1.2:
+
+A este login se le agregó el dashboard que también está sujeto a cambios.
+

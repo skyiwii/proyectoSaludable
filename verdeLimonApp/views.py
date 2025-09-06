@@ -175,3 +175,6 @@ def distribucion(request):
 
     contexto = {"ubicaciones": ubicaciones}
     return render(request, "verdeLimonTemplates/distribucion.html", contexto)
+
+def dashboard_view(request):
+    return render(request, 'verdeLimonTemplates/dashboard.html')

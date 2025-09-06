@@ -6,6 +6,24 @@
     <title>Green Limon</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <style>
+        /* Navbar centrada */
+        nav.navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#2e7d32; color:#fff; }
+        nav.navbar ul { display:flex; gap:20px; list-style:none; margin:0; padding:0; }
+        nav.navbar ul li a { color:#fff; text-decoration:none; font-weight:bold; }
+        nav.navbar .logo { display:flex; align-items:center; gap:10px; font-weight:bold; font-size:18px; }
+        nav.navbar .logo-img { width:40px; }
+        /* Login/Registro en dropdown */
+        .user-menu { display:flex; gap:10px; align-items:center; }
+        .user-menu button { padding:6px 12px; border-radius:6px; border:none; cursor:pointer; background:#cddc39; color:#2e7d32; font-weight:bold; }
+        .user-menu button:hover { background:#aed581; }
+        .dropdown { position:relative; display:inline-block; }
+        .dropdown-content { display:none; position:absolute; top:35px; right:0; background:#fff; min-width:220px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1); border-radius:8px; z-index:100; }
+        .dropdown-content input { width:100%; margin:6px 0; padding:8px; border-radius:6px; border:1px solid #ccc; }
+        .dropdown-content button { width:100%; padding:8px; background:#2e7d32; color:#fff; border:none; border-radius:6px; margin-top:6px; cursor:pointer; }
+        .dropdown-content button:hover { background:#1b5e20; }
+        .message { color:red; font-size:14px; margin-top:4px; }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -18,11 +36,36 @@
                 <img src="{% static 'images/limon.png' %}" alt="Logo Green Limon" class="logo-img">
                 <span>Distribuidora Green Limon</span>
             </div>
-            <ul>
+            <ul id="main-nav">
                 <li><a href="{% url 'distribucion' %}">Distribución</a></li>
                 <li><a href="{% url 'nosotros' %}">Sobre Nosotros</a></li>
                 <li><a href="{% url 'contacto' %}">Contacto</a></li>
             </ul>
+            <!-- Menú Usuario -->
+            <div class="user-menu">
+                <span id="welcome-msg" style="display:none;">Hola, <span id="user-name"></span>!</span>
+                <button id="logout-btn" onclick="logout()" style="display:none;">Cerrar Sesión</button>
+                <div class="dropdown" id="auth-dropdown">
+                    <button id="auth-btn">Login / Registro</button>
+                    <div class="dropdown-content" id="auth-form">
+                        <div id="login-section">
+                            <input type="text" id="login-username" placeholder="Usuario">
+                            <input type="password" id="login-password" placeholder="Contraseña">
+                            <button onclick="login()">Iniciar Sesión</button>
+                            <p class="message" id="login-msg"></p>
+                            <p style="font-size:12px; margin-top:6px;">¿No tienes cuenta? <a href="#" onclick="showRegisterDropdown()">Regístrate</a></p>
+                        </div>
+                        <div id="register-section" style="display:none;">
+                            <input type="text" id="reg-username" placeholder="Usuario">
+                            <input type="password" id="reg-password" placeholder="Contraseña">
+                            <input type="password" id="reg-password2" placeholder="Repetir Contraseña">
+                            <button onclick="register()">Registrar</button>
+                            <p class="message" id="reg-msg"></p>
+                            <p style="font-size:12px; margin-top:6px;">¿Ya tienes cuenta? <a href="#" onclick="showLoginDropdown()">Inicia Sesión</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -31,7 +74,6 @@
         <h1>Calidad y confianza</h1>
         <p>Somos líderes en distribución de productos naturales en Atacama.</p>
         <a href="{% url 'distribucion' %}" class="btn">Ver Distribución</a>
-        <!-- Search -->
         <div class="search-hero">
             <input type="text" placeholder="Buscar productos...">
             <button>🔍</button>
@@ -67,13 +109,11 @@
             <p>Red de centros logísticos para llegar a toda la región.</p>
             <a href="{% url 'distribucion' %}" class="btn">Ver ubicaciones</a>
         </div>
-
         <div class="feature">
             <h3>Sobre Nosotros</h3>
             <p>Conoce más sobre nuestra historia y valores.</p>
             <a href="{% url 'nosotros' %}" class="btn">Leer más</a>
         </div>
-
         <div class="feature">
             <h3>Contacto</h3>
             <p>Solicita tu cotización fácilmente.</p>
@@ -85,5 +125,88 @@
     <footer>
         <p>&copy; 2025 Distribuidora Green Limon | Todos los derechos reservados</p>
     </footer>
+
+    <script>
+        // Dummy users
+        let USERS = {
+            'admin1': {password: '1234', role: 'admin'},
+            'user1': {password: 'abcd', role: 'user'}
+        };
+
+        // Cargar usuario actual
+        const CURRENT_USER = JSON.parse(localStorage.getItem('CURRENT_USER'));
+        if(CURRENT_USER){
+            document.getElementById('welcome-msg').style.display = 'inline';
+            document.getElementById('user-name').textContent = CURRENT_USER.username;
+            document.getElementById('logout-btn').style.display = 'inline';
+            document.getElementById('auth-btn').style.display = 'none';
+            addDashboardLink();
+        }
+
+        function login(){
+            let u = document.getElementById('login-username').value;
+            let p = document.getElementById('login-password').value;
+            if(USERS[u] && USERS[u].password === p){
+                localStorage.setItem('CURRENT_USER', JSON.stringify({username:u, role:USERS[u].role}));
+                window.location.href = "{% url 'dashboard' %}";
+            } else {
+                document.getElementById('login-msg').textContent = 'Usuario o contraseña incorrectos';
+            }
+        }
+
+        function register(){
+            let u = document.getElementById('reg-username').value;
+            let p = document.getElementById('reg-password').value;
+            let p2 = document.getElementById('reg-password2').value;
+            if(!u || !p){
+                document.getElementById('reg-msg').textContent = 'Completa todos los campos.';
+                return;
+            }
+            if(p !== p2){
+                document.getElementById('reg-msg').textContent = 'Las contraseñas no coinciden.';
+                return;
+            }
+            if(USERS[u]){
+                document.getElementById('reg-msg').textContent = 'El usuario ya existe.';
+                return;
+            }
+            USERS[u] = {password: p, role: 'user'};
+            document.getElementById('reg-msg').textContent = '¡Usuario creado! Puedes iniciar sesión.';
+        }
+
+        function logout(){
+            localStorage.removeItem('CURRENT_USER');
+            window.location.reload();
+        }
+
+        function addDashboardLink(){
+            const nav = document.getElementById('main-nav');
+            if(!document.getElementById('dashboard-link')){
+                const li = document.createElement('li');
+                li.id = 'dashboard-link';
+                const a = document.createElement('a');
+                a.href = "{% url 'dashboard' %}";
+                a.textContent = "Dashboard";
+                li.appendChild(a);
+                nav.appendChild(li);
+            }
+        }
+
+        function showRegisterDropdown(){
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('register-section').style.display = 'block';
+        }
+
+        function showLoginDropdown(){
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('register-section').style.display = 'none';
+        }
+
+        // Toggle dropdown
+        document.getElementById('auth-btn').addEventListener('click', function(){
+            const f = document.getElementById('auth-form');
+            f.style.display = f.style.display==='block' ? 'none':'block';
+        });
+    </script>
 </body>
 </html>
