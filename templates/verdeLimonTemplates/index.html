@@ -1,54 +1,29 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Green Limon</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <header>
-        <div class="topbar">
-            <p>Distribuidora Green Limon • Cotiza con nosotros al +56 9 1234 5678</p>
-        </div>
-        <nav class="navbar">
-            <div class="logo">Distribuidora Green Limon</div>
-            <ul>
-                <li><a href="{% url 'index' %}">Inicio</a></li>
-                <li><a href="{% url 'productos' %}">Productos</a></li>
-                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
-                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
-                <li><a href="{% url 'contacto' %}">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
+{% extends "VerdeLimon/base.html" %}
 
-    <section class="hero">
-        <h1>Calidad y confianza</h1>
-        <p>Somos líderes en distribución de productos naturales en Atacama.</p>
+{% block title %}Inicio - Verde Limon{% endblock %}
+{% block content %}
+
+<section class="hero">
+    <h1>Calidad y confianza</h1>
+    <p>Somos lideres en distribucion de productos naturales en Atacama.</p>
+    <a href="{% url 'productos' %}" class="btn">ver productos</a>
+</section>
+
+<section class="features">
+    <div class="feature">
+        <h3>Productos</h3>
+        <p>Encuentra productos naturales de calidad.</p>
         <a href="{% url 'productos' %}" class="btn">Ver productos</a>
-    </section>
-
-    <section class="features">
-        <div class="feature">
-            <h3>Productos</h3>
-            <p>Encuentra productos naturales de calidad.</p>
-            <a href="{% url 'productos' %}" class="btn">Ver productos</a>
-        </div>
-        <div class="feature">
-            <h3>Distribución</h3>
-            <p>Red de centros logísticos para llegar a toda la región.</p>
-            <a href="{% url 'distribucion' %}" class="btn">Ver ubicaciones</a>
-        </div>
-        <div class="feature">
-            <h3>Contacto</h3>
-            <p>Solicita tu cotización fácilmente.</p>
-            <a href="https://wa.me/56912345678" target="_blank" class="btn">Escribir por WhatsApp</a>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2025 Distribuidora Green Limon | Todos los derechos reservados</p>
-    </footer>
-</body>
-</html>
+    </div>
+    <div class="feature">
+        <h3>Distribución</h3>
+        <p>Red de centros logisticos para llegar a toda la region.</p>
+        <a href="{% url 'distribucion' %}" class="btn">Ver ubicaciones</a>
+    </div>
+    <div class="feature">
+        <h3>Contacto</h3>
+        <p>Solicita tu cotizacion facilmente.</p>
+        <a href="" target="" class="btn">Escribir</a>
+    </div>
+</section>
+{% endblock %}

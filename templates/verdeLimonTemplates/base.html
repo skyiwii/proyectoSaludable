@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Verde Limon {% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    </head>
+    <body>
+         <header>
+            <div class="topbar">
+                <p>Distribuidora Verde Limon • Cotiza con nosotros al +56 9 1234 5678</p>
+            </div>
+            <nav class="navbar">
+                <div class="logo">Distribuidora Verde Limon</div>
+                <ul>
+                    <li><a href="{% url 'index' %}">Inicio</a></li>
+                    <li><a href="{% url 'productos' %}">Productos</a></li>
+                    <li><a href="{% url 'distribucion' %}">Distribución</a></li>
+                    <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                    <li><a href="{% url 'contacto' %}">Contacto</a></li>
+                    <li><a href="{% url 'favoritos' %}">Favoritos</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Distribuidora Verde Limon | Todos los derechos reservados</p>
+        </footer>
+    </body>
+</html>
