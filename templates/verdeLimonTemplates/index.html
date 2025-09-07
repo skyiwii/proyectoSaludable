@@ -1,29 +1,89 @@
-{% extends "VerdeLimon/base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Green Limon</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="topbar">
+            <p>Distribuidora Green Limon • Cotiza con nosotros al +56 9 1234 5678</p>
+        </div>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="{% static 'images/limon.png' %}" alt="Logo Green Limon" class="logo-img">
+                <span>Distribuidora Green Limon</span>
+            </div>
+            <ul>
+                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
+                <li><a href="{% url 'nosotros' %}">Sobre Nosotros</a></li>
+                <li><a href="{% url 'contacto' %}">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
 
-{% block title %}Inicio - Verde Limon{% endblock %}
-{% block content %}
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Calidad y confianza</h1>
+        <p>Somos líderes en distribución de productos naturales en Atacama.</p>
+        <a href="{% url 'distribucion' %}" class="btn">Ver Distribución</a>
+        <!-- Search -->
+        <div class="search-hero">
+            <input type="text" placeholder="Buscar productos...">
+            <button>🔍</button>
+        </div>
+    </section>
 
-<section class="hero">
-    <h1>Calidad y confianza</h1>
-    <p>Somos lideres en distribucion de productos naturales en Atacama.</p>
-    <a href="{% url 'productos' %}" class="btn">ver productos</a>
-</section>
+    <!-- Productos en tendencia -->
+    <section class="trending">
+        <h2>¡Revisa ya mismo nuestros productos!</h2>
+        <div class="trending-cards">
+            <div class="card">
+                <img src="{% static 'images/product1.png' %}" alt="Pan de Centeno Integral">
+                <h3>Pan de Centeno Integral</h3>
+                <a href="{% url 'productos' %}" class="btn-small">Ver producto</a>
+            </div>
+            <div class="card">
+                <img src="{% static 'images/product2.png' %}" alt="Barra Cereal Saludable">
+                <h3>Barra Cereal Saludable</h3>
+                <a href="{% url 'productos' %}" class="btn-small">Ver producto</a>
+            </div>
+            <div class="card">
+                <img src="{% static 'images/product3.png' %}" alt="Miel Natural">
+                <h3>Miel Natural</h3>
+                <a href="{% url 'productos' %}" class="btn-small">Ver producto</a>
+            </div>
+        </div>
+    </section>
 
-<section class="features">
-    <div class="feature">
-        <h3>Productos</h3>
-        <p>Encuentra productos naturales de calidad.</p>
-        <a href="{% url 'productos' %}" class="btn">Ver productos</a>
-    </div>
-    <div class="feature">
-        <h3>Distribución</h3>
-        <p>Red de centros logisticos para llegar a toda la region.</p>
-        <a href="{% url 'distribucion' %}" class="btn">Ver ubicaciones</a>
-    </div>
-    <div class="feature">
-        <h3>Contacto</h3>
-        <p>Solicita tu cotizacion facilmente.</p>
-        <a href="" target="" class="btn">Escribir</a>
-    </div>
-</section>
-{% endblock %}
+    <!-- Features -->
+    <section class="features">
+        <div class="feature">
+            <h3>Distribución</h3>
+            <p>Red de centros logísticos para llegar a toda la región.</p>
+            <a href="{% url 'distribucion' %}" class="btn">Ver ubicaciones</a>
+        </div>
+
+        <div class="feature">
+            <h3>Sobre Nosotros</h3>
+            <p>Conoce más sobre nuestra historia y valores.</p>
+            <a href="{% url 'nosotros' %}" class="btn">Leer más</a>
+        </div>
+
+        <div class="feature">
+            <h3>Contacto</h3>
+            <p>Solicita tu cotización fácilmente.</p>
+            <a href="https://wa.me/56912345678" target="_blank" class="btn">Escribir por WhatsApp</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Distribuidora Green Limon | Todos los derechos reservados</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+/* ================= Contenedor Distribución ================= */
+.distribucion-content {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
+
+/* ================= Titulos ================= */
+.distribucion-content h1 {
+    color: #2e7d32;
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.distribucion-content p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* ================= Selector de lugar ================= */
+.distribucion-content label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: #388e3c;
+}
+
+.distribucion-content select {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+    font-size: 16px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.distribucion-content select:focus {
+    border-color: #2e7d32;
+    box-shadow: 0 0 5px rgba(46,125,50,0.3);
+    outline: none;
+}
+
+/* ================= Tarjeta de detalle ================= */
+.detalle-lugar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    background-color: #f9f9f9;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.detalle-lugar:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* ================= Titulo, ciudad y tipo ================= */
+.detalle-lugar h2 {
+    color: #2e7d32;
+    font-size: 28px;
+}
+
+.detalle-lugar p.ciudad {
+    font-weight: bold;
+    color: #388e3c;
+}
+
+.detalle-lugar p.tipo {
+    font-style: italic;
+    color: #555;
+}
+
+/* ================= Imagen ================= */
+.detalle-lugar img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* ================= Descripción ================= */
+.detalle-lugar p.descripcion {
+    color: #555;
+    line-height: 1.6;
+}
+
+/* ================= Lista de productos ================= */
+.detalle-lugar ul.productos {
+    list-style-type: disc;
+    padding-left: 20px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* ================= Responsive ================= */
+@media (min-width: 768px) {
+    .detalle-lugar {
+        flex-direction: row;
+        gap: 25px;
+    }
+
+    .detalle-lugar img {
+        width: 300px;
+        flex-shrink: 0;
+    }
+
+    .detalle-lugar div.detalle-texto {
+        flex: 1;
+    }
+}

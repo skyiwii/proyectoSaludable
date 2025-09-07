@@ -1,0 +1,87 @@
+/* ================= Contenedor principal ================= */
+.contact-content {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
+
+/* ================= Titulos ================= */
+.contact-content h1 {
+    color: #2e7d32; /* verde principal */
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.contact-content h2 {
+    color: #388e3c; /* verde secundario */
+    font-size: 24px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+/* ================= Parrafos ================= */
+.contact-content p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+/* ================= Botón WhatsApp ================= */
+.contact-content .btn {
+    display: inline-block;
+    background-color: #25d366; /* verde WhatsApp */
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 15px 0;
+    transition: background-color 0.3s;
+}
+
+.contact-content .btn:hover {
+    background-color: #1ebe57;
+}
+
+/* ================= Listas ================= */
+.contact-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+/* ================= Imagen ================= */
+.contact-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+/* ================= Redes sociales ================= */
+.contact-content .social-links {
+    margin-top: 15px;
+}
+
+.contact-content .social-links a {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.contact-content .social-links a img {
+    width: 24px;
+    margin-right: 8px;
+}
+
+.contact-content .social-links a:hover {
+    color: #2e7d32;
+}
