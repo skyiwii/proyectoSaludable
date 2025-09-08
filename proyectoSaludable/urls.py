@@ -24,6 +24,7 @@ from verdeLimonApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name="index"),
+    
     path('productos/', views.productos, name="productos"),
     path('nosotros/', views.nosotros, name="nosotros"),
     path('contacto/', views.contacto, name="contacto"),

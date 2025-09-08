@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Productos - Green Limon</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/productos.css' %}">
     <!-- Ícono pestaña -->
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
@@ -33,24 +34,42 @@
         <h1>Nuestros Productos</h1>
         <div class="product-list">
             <div class="product-card">
-                <img src="{% static 'images/product1.jpg' %}" alt="Producto 1">
-                <h3>Producto 1</h3>
-                <p>Lorem ipsum dolor sit amet.</p>
+                <img src="{% static 'images/product1.png' %}" width="200" height="200" alt="Producto 1">
+                <h3>Pan de Centeno Integral</h3>
+                <p>Elaborado con granos enteros de centeno, rico en fibra y sabor autentico.</p>
                 <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
+                <button class="fav-btn">⭐Favorito</button>
             </div>
             <div class="product-card">
-                <img src="{% static 'images/product2.jpg' %}" alt="Producto 2">
-                <h3>Producto 2</h3>
-                <p>Lorem ipsum dolor sit amet.</p>
+                <img src="{% static 'images/product2.png' %}" width="250" height="250" alt="Producto 2">
+                <h3>Barra Cereal Saludable</h3>
+                <p>Hecha con avena, miel y frutos secos, ideal como snack nutritivo y lleno de energia natural.</p>
                 <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
+                <button class="fav-btn">⭐Favorito</button>
             </div>
             <div class="product-card">
-                <img src="{% static 'images/product3.jpg' %}" alt="Producto 3">
-                <h3>Producto 3</h3>
-                <p>Lorem ipsum dolor sit amet.</p>
+                <img src="{% static 'images/product3.png' %}" width="250" height="250" alt="Producto 3">
+                <h3>Miel Natural</h3>
+                <p>Pura y sin aditivos, extraida para endulzar de forma sana y nutritiva.
+                    Miel natural, pura y 100% orgánica.</p>
                 <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
+                <button class="fav-btn">⭐Favorito</button>
             </div>
         </div>
     </section>
+    <script>
+        const favButtons = document.querySelectorAll('.fav-btn');
+
+        favButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+                if (button.classList.contains('active')) {
+                    button.textContent ="⭐ En Favoritos";
+                } else {
+                    button.textContent = "⭐ En Favoritos";
+                }
+            });
+        });
+    </script>
 </body>
 </html>
