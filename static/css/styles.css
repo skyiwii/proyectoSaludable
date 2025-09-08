@@ -1,4 +1,4 @@
-/* reset */
+/* ================= Reset ================= */
 * {
     margin: 0;
     padding: 0;
@@ -7,23 +7,23 @@
 
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f9f9f9;
     color: #333;
-    background-color: #fdfdfb;
     line-height: 1.6;
 }
 
-/* Barra superior */
+/* ================= Topbar ================= */
 .topbar {
-    background: #2e7d32; /* verde oscuro */
+    background-color: #4caf50; /* verde moderno */
     color: #fff;
     text-align: center;
     padding: 6px 0;
     font-size: 14px;
 }
 
-/* Barra de navegacion (Navbar) */
+/* ================= Navbar ================= */
 .navbar {
-    background: #ffffff;
+    background: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -32,9 +32,14 @@ body {
 }
 
 .navbar .logo {
-    font-weight: bold;
-    font-size: 20px;
-    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    width: 50px;
+    height: auto;
 }
 
 .navbar ul {
@@ -54,7 +59,7 @@ body {
     color: #1b5e20;
 }
 
-/* hero (main) */
+/* ================= Hero ================= */
 .hero {
     background: url('../images/hero.jpg') no-repeat center center/cover;
     text-align: center;
@@ -68,10 +73,13 @@ body {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(46, 125, 50, 0.6); /* capa verde translúcida */
+    background: rgba(76, 175, 80, 0.5); /* capa verde translúcida */
 }
 
-.hero h1, .hero p, .hero .btn {
+.hero h1,
+.hero p,
+.hero .btn,
+.hero .search-hero {
     position: relative;
     z-index: 1;
 }
@@ -101,7 +109,31 @@ body {
     color: #1b5e20;
 }
 
-/* funcionalidades (features) */
+/* ================= Hero Search ================= */
+.search-hero {
+    margin-top: 30px;
+    display: inline-flex;
+    border-radius: 50px;
+    overflow: hidden;
+    border: 2px solid #cddc39;
+}
+
+.search-hero input {
+    padding: 10px 15px;
+    border: none;
+    outline: none;
+    width: 250px;
+}
+
+.search-hero button {
+    background: #cddc39;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ================= Features ================= */
 .features {
     display: flex;
     justify-content: space-around;
@@ -137,7 +169,74 @@ body {
     font-size: 15px;
 }
 
-/* pie de pagina (footer) */
+/* ================= Productos en tendencia ================= */
+.trending {
+    padding: 50px 20px;
+    background: #f1f8e9;
+    text-align: center;
+}
+
+.trending h2 {
+    color: #2e7d32;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.trending-cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 220px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.card img {
+    display: block;
+    width: 100%;
+    height: 180px;           
+    object-fit: cover;       
+    object-position: center;
+    border-radius: 8px 8px 0 0; 
+}
+
+
+
+.card h3 {
+    color: #388e3c;
+    margin: 15px 0;
+}
+
+.btn-small {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 8px 15px;
+    background: #cddc39;
+    color: #2e7d32;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+
+.btn-small:hover {
+    background: #aed581;
+    color: #1b5e20;
+}
+
+/* ================= Footer ================= */
 footer {
     background: #2e7d32;
     color: #fff;

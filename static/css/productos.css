@@ -1,0 +1,98 @@
+/* ==== Estilo general de la página ==== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fcfdf7; /* Fondo cálido y claro */
+    color: #333;
+}
+
+/* ==== Título ==== */
+.products h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    margin: 40px 0 30px;
+    color: #5a8f35; /* Verde oliva saludable */
+}
+
+/* ==== Contenedor de productos ==== */
+.product-list {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    padding: 20px 40px;
+    flex-wrap: wrap; /* Para que sea responsivo */
+}
+
+/* ==== Tarjeta de producto ==== */
+.product-card {
+    background: #f1f8e9; /* Verde claro y cálido */
+    border: 2px solid #a5d6a7; /* Verde más visible */
+    border-radius: 15px;
+    width: 280px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.12);
+}
+
+/* ==== Imagenes ==== */
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #c5e1a5; /* Borde más visible */
+}
+
+/* ==== Nombre ==== */
+.product-card h3 {
+    margin: 10px 0;
+    font-size: 1.3rem;
+    color: #558b2f; /* Verde más oscuro */
+}
+
+/* ==== Descripción ==== */
+.product-card p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* ==== Botón ==== */
+.product-card .btn {
+    display: inline-block;
+    background-color: #aed581; /* Verde lima cálido */
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+.product-card .btn:hover {
+    background-color: #7cb342; /* Verde oliva más fuerte */
+}
+
+.fav-btn {
+    margin-top: 10px;
+    background-color: #fff3cd; /* Amarillo cálido */
+    border: 1px solid #f0ad4e;
+    color: #8a6d3b;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.fav-btn.active {
+    background-color: #f0ad4e; /* Más intenso cuando está activo */
+    color: #fff;
+}
