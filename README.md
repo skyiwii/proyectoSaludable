@@ -4,10 +4,7 @@
 
 Proyecto Inicial para la empresa Green Limons centrada en la distribución de productos y sistema administrativo para empleados.
 
-Aquellas acciones que tengan "**" son los más relevantes de ese dia.
-
-Cambios día 1:
-
+Día 1:
 
 Acción 1:
 
@@ -41,7 +38,7 @@ Se modifico la pestaña de navegación de contacto.html para que quedase acorde 
 
 Acción 1.3:
 
-**Se "modernizo" el aspecto general de la página en su styles.css (principal) y se reorganizo la página completa para más lógica como centro distributivo/tienda.
+Se "modernizo" el aspecto general de la página en su styles.css (principal) y se reorganizo la página completa para más lógica como centro distributivo/tienda.
 
 Acción 1.4:
 
@@ -247,7 +244,8 @@ Acción 1.2:
 A este login se le agregó el dashboard que también está sujeto a cambios.
 
 
-Commit 3
+Día 4 (Final):
+
 -Se completo el contenido de la pagina nosotros.html con histroia, objetivos, vision, alcance e invitación de la empresa.
 -se creó el archivo nosotros.css para aplicar un diseño personalizado con colores naturales enfocados en alimentación  saludable.
 -se modifico productos.html:
