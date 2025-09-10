@@ -8,20 +8,20 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background: #f5f5f5;
     color: #333;
 }
 
 /* =======================
-   TOPBAR
+   TOPBAR: Para cambiar los colores de la barra principal de arriba donde sale "Distribuidora Verde Limón • Cotiza con nosotros al +56 9 1234 5678"
 ======================= */
 .topbar {
-    background: #cddc39;
-    color: #2e7d32;
-    font-size: 14px;
-    text-align: center;
-    padding: 6px 0;
+    background: #cddc39; /*Esta cambia el color del fondo*/
+    color: #2e7d32; /*Esta cambia el color de las letras*/
+    font-size: 14px; /*Esta cambia el tamaño de las letras*/
+    text-align: center; /*Esta cambia la alineación de las letras*/
+    padding: 6px 0; /*Esta cambia el tamaño del cuadrado de la topbar, osea el padding*/
 }
 
 /* =======================
@@ -138,7 +138,7 @@ nav.navbar .logo-img {
 }
 
 /* =======================
-   HERO
+   HERO: Objetos principales del indice
 ======================= */
 .hero {
     text-align: center;
@@ -146,33 +146,41 @@ nav.navbar .logo-img {
     background: #e8f5e9;
 }
 
+/*Título 1 de la página principal*/
 .hero h1 {
     font-size: 36px;
     color: #2e7d32;
     margin-bottom: 15px;
 }
 
+/*Parráfo de la página principal después del título*/
 .hero p {
     font-size: 18px;
     margin-bottom: 20px;
 }
 
+
+/*Botón ver distribución*/
 .hero .btn {
     background: #2e7d32;
     color: #fff;
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 24px;
     text-decoration: none;
     font-weight: bold;
     transition: background 0.3s;
 }
 
+
+/*Vista sobre el mouse del botón distribución*/
 .hero .btn:hover {
     background: #1b5e20;
 }
 
+
+/*Barra de búsqueda*/
 .search-hero {
-    margin-top: 20px;
+    margin-top: 36px;
 }
 
 .search-hero input {
@@ -182,6 +190,8 @@ nav.navbar .logo-img {
     border: 1px solid #ccc;
 }
 
+
+/*Lupa*/
 .search-hero button {
     padding: 10px 15px;
     border: none;
@@ -196,13 +206,14 @@ nav.navbar .logo-img {
 }
 
 /* =======================
-   TRENDING / CARDS
+   "¡Revisa ya mismo nuestros productos!" Feature: esta funcionalidad antes se llamaba "Trending"
 ======================= */
 .trending {
     padding: 60px 20px;
     text-align: center;
 }
 
+/*Título 1*/
 .trending h2 {
     margin-bottom: 30px;
     color: #2e7d32;
@@ -216,42 +227,54 @@ nav.navbar .logo-img {
 }
 
 .trending .card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    width: 220px;
-    padding: 15px;
-    text-align: center;
+    background: #fff; /*Fondo treding cards*/
+    border-radius: 24px;
+    box-shadow: 0 20px 12px rgba(0,0,0,0.1); /*Sombras de las treding cards*/
+    width: 220px; /*Tamaño de las imágenes*/
+    padding: 12px; /*Padding de las imágenes*/
+    text-align: center; /*Alineamiento de las imágenes*/
 }
+/*
+Opciones de alineamiento
+text-align: start;
+text-align: end;
+text-align: left;
+text-align: right;
+text-align: center;
+text-align: justify;
+text-align: match-parent;
+*/
 
+
+/*Editar imágenes dimensiones entre otros*/
 .trending .card img {
     width: 100%;
     border-radius: 6px;
     margin-bottom: 10px;
 }
-
+/*Título de la trending card*/
 .trending .card h3 {
     font-size: 16px;
     margin-bottom: 10px;
 }
-
+/*Botón de la trending card*/
 .btn-small {
     display: inline-block;
-    padding: 6px 12px;
-    background: #2e7d32;
-    color: #fff;
-    border-radius: 6px;
+    padding: 6px 12px; /*Padding del botón*/
+    background: #2e7d32; /*Cambiar fondo de botón*/
+    color: #fff; /*Cambiar color de letra del botón*/
+    border-radius: 6px; /*Borde del botón*/
     text-decoration: none;
-    font-size: 14px;
+    font-size: 14px; /*Tamaño de la fuente del botón*/
     transition: background 0.3s;
 }
-
+/*Botón sobre la trending card (fondo)*/
 .btn-small:hover {
     background: #1b5e20;
 }
 
 /* =======================
-   FEATURES
+   FEATURES (funcionalidades)
 ======================= */
 .features {
     display: flex;
@@ -261,11 +284,11 @@ nav.navbar .logo-img {
     padding: 60px 20px;
     background: #f5f5f5;
 }
-
+/*Esto es para ver las funcionalidades, osea la parte final del índice para ir directamente a la opción que se quiera*/
 .feature {
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 12px rgba(0,0,0,0.1);
     padding: 20px;
     width: 250px;
     text-align: center;
@@ -282,20 +305,20 @@ nav.navbar .logo-img {
 }
 
 /* =======================
-   FOOTER
+   FOOTER (parte final de la página)
 ======================= */
 footer {
-    background: #2e7d32;
-    color: #fff;
-    text-align: center;
-    padding: 15px 20px;
-    font-size: 14px;
+    background: #2e7d32; /*Fondo */
+    color: #fff; /*Color de fuente */
+    text-align: center; /*Lineamiento del texto */
+    padding: 15px 20px; /*Padding de la barra */
+    font-size: 14px; /*Tamaño de fuente de la barra */
 }
 
 /* =======================
-   MEDIA QUERIES
+   MEDIA QUERIES Sin funcionalidad
 ======================= */
-@media (max-width: 768px){
+/* @media (max-width: 768px){
     nav.navbar {
         flex-direction: column;
         align-items: flex-start;
@@ -315,4 +338,263 @@ footer {
         flex-direction: column;
         align-items: center;
     }
+} */
+
+
+/* =======================
+   DASHBOARD: Toda la vista de dashboards de usuario y administrador
+======================= */
+.dashboard-header {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
 }
+
+.dashboard-header h1 {
+    margin-bottom: 0;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.dashboard-header p {
+    margin-bottom: 0;
+    opacity: 0.85;
+    font-size: 1.1rem;
+}
+
+.stats-card {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    border-left: 4px solid #4caf50;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+.stats-card .card-body {
+    padding: 1.5rem;
+}
+
+.stats-card h3 {
+    color: #2e7d32;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card p {
+    color: #1b5e20;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.product-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.price-tag {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.category-badge {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.btn-favorite {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn-favorite:hover {
+    background: linear-gradient(135deg, #ee5a52, #e74c3c);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-add-favorite {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn-add-favorite:hover {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.favorite-heart {
+    color: #ff6b6b;
+    font-size: 1.2em;
+}
+
+/* Dashboard Navigation Enhancements */
+.navbar.dashboard-nav {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar.dashboard-nav .navbar-brand,
+.navbar.dashboard-nav .navbar-nav .nav-link {
+    color: white !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar.dashboard-nav .navbar-nav .nav-link:hover {
+    color: #cddc39 !important;
+    transform: translateY(-1px);
+}
+
+/* Form Enhancements */
+.form-control:focus,
+.form-select:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2e7d32, #4caf50);
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    transform: translateY(-1px);
+}
+
+/* Table Enhancements */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(76, 175, 80, 0.05);
+}
+
+/* Badge Enhancements */
+.badge.bg-success {
+    background: linear-gradient(135deg, #4caf50, #66bb6a) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ff9800, #ffb74d) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #f44336, #ef5350) !important;
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(135deg, #607d8b, #78909c) !important;
+}
+
+/* Card Enhancements */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    color: white;
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .dashboard-header p {
+        font-size: 1rem;
+    }
+    
+    .stats-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .product-image {
+        height: 150px;
+    }
+}
+
+
+/* Navbar centrada */
+
+nav.navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#2e7d32; color:#fff; }
+nav.navbar ul { display:flex; gap:20px; list-style:none; margin:0; padding:0; }
+nav.navbar ul li a { color:#fff; text-decoration:none; font-weight:bold; }
+nav.navbar .logo { display:flex; align-items:center; gap:10px; font-weight:bold; font-size:18px; }
+nav.navbar .logo-img { width:40px; }
+
+
+/* Login/Registro en dropdown */
+
+.user-menu { display:flex; gap:10px; align-items:center; }
+.user-menu button { padding:6px 12px; border-radius:6px; border:none; cursor:pointer; background:#cddc39; color:#2e7d32; font-weight:bold; }
+.user-menu button:hover { background:#aed581; }
+.dropdown { position:relative; display:inline-block; }
+.dropdown-content { display:none; position:absolute; top:35px; right:0; background:#fff; min-width:220px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1); border-radius:8px; z-index:100; }
+.dropdown-content input { width:100%; margin:6px 0; padding:8px; border-radius:6px; border:1px solid #ccc; }
+.dropdown-content button { width:100%; padding:8px; background:#2e7d32; color:#fff; border:none; border-radius:6px; margin-top:6px; cursor:pointer; }
+.dropdown-content button:hover { background:#1b5e20; }
+.message { color:red; font-size:14px; margin-top:4px; }
+

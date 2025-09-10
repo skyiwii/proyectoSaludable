@@ -22,13 +22,15 @@ from django.urls import path
 from verdeLimonApp import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name="index"),
-    
-    path('productos/', views.productos, name="productos"),
-    path('nosotros/', views.nosotros, name="nosotros"),
-    path('contacto/', views.contacto, name="contacto"),
+    path("admin/", admin.site.urls),
+    path("", views.index, name="index"),
+    path("productos/", views.productos, name="productos"),
+    path("nosotros/", views.nosotros, name="nosotros"),
+    path("contacto/", views.contacto, name="contacto"),
     path("distribucion/", views.distribucion, name="distribucion"),
-    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path("dashboard/", views.dashboard_view, name="dashboard"),
+    path("admin-dashboard/", views.admin_dashboard, name="admin_dashboard"),
+    path("user-dashboard/", views.user_dashboard, name="user_dashboard"),
+    path("add-to-favorites/", views.add_to_favorites, name="add_to_favorites"),
+    path("remove-from-favorites/", views.remove_from_favorites, name="remove_from_favorites"),
 ]
-

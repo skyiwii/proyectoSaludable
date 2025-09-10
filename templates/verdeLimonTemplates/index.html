@@ -3,38 +3,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Green Limon</title>
+    <title>Verde Limón</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-    <style>
-        /* Navbar centrada */
-        nav.navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#2e7d32; color:#fff; }
-        nav.navbar ul { display:flex; gap:20px; list-style:none; margin:0; padding:0; }
-        nav.navbar ul li a { color:#fff; text-decoration:none; font-weight:bold; }
-        nav.navbar .logo { display:flex; align-items:center; gap:10px; font-weight:bold; font-size:18px; }
-        nav.navbar .logo-img { width:40px; }
-        /* Login/Registro en dropdown */
-        .user-menu { display:flex; gap:10px; align-items:center; }
-        .user-menu button { padding:6px 12px; border-radius:6px; border:none; cursor:pointer; background:#cddc39; color:#2e7d32; font-weight:bold; }
-        .user-menu button:hover { background:#aed581; }
-        .dropdown { position:relative; display:inline-block; }
-        .dropdown-content { display:none; position:absolute; top:35px; right:0; background:#fff; min-width:220px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.1); border-radius:8px; z-index:100; }
-        .dropdown-content input { width:100%; margin:6px 0; padding:8px; border-radius:6px; border:1px solid #ccc; }
-        .dropdown-content button { width:100%; padding:8px; background:#2e7d32; color:#fff; border:none; border-radius:6px; margin-top:6px; cursor:pointer; }
-        .dropdown-content button:hover { background:#1b5e20; }
-        .message { color:red; font-size:14px; margin-top:4px; }
-    </style>
 </head>
 <body>
     <!-- Header -->
     <header>
         <div class="topbar">
-            <p>Distribuidora Green Limon • Cotiza con nosotros al +56 9 1234 5678</p>
+            <p>Distribuidora Verde Limón • Cotiza con nosotros al +56 9 1234 5678</p>
         </div>
         <nav class="navbar">
             <div class="logo">
-                <img src="{% static 'images/limon.png' %}" alt="Logo Green Limon" class="logo-img">
-                <span>Distribuidora Green Limon</span>
+                <img src="{% static 'images/limon.png' %}" alt="Logo Verde Limón" class="logo-img">
+                <span>Distribuidora Verde Limón</span>
             </div>
             <ul id="main-nav">
                 <li><a href="{% url 'distribucion' %}">Distribución</a></li>
@@ -119,19 +101,19 @@
         <div class="feature">
             <h3>Contacto</h3>
             <p>Solicita tu cotización fácilmente.</p>
-            <a href="https://wa.me/56912345678" target="_blank" class="btn">Escribir por WhatsApp</a>
+            <a href="{% url 'contacto' %}" class="btn">Ver contactos</a>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 Distribuidora Green Limon | Todos los derechos reservados</p>
+        <p>&copy; 2025 Distribuidora Verde Limón | Todos los derechos reservados</p>
     </footer>
 
     <script>
         // Dummy users
         let USERS = {
-            'admin1': {password: '1234', role: 'admin'},
+            'admin1': {password: '1234', role: 'admin'}, // Dummy data, esto se carga localmente para simular a los usuarios
             'user1': {password: 'abcd', role: 'user'}
         };
 
@@ -149,8 +131,18 @@
             let u = document.getElementById('login-username').value;
             let p = document.getElementById('login-password').value;
             if(USERS[u] && USERS[u].password === p){
-                localStorage.setItem('CURRENT_USER', JSON.stringify({username:u, role:USERS[u].role}));
-                window.location.href = "{% url 'dashboard' %}";
+                // guardo la info en localStorage como ya lo haces
+                localStorage.setItem('CURRENT_USER', JSON.stringify({username: u, role: USERS[u].role}));
+
+                // redirijo según el role existente en el objeto USERS
+                if (USERS[u].role === 'admin') {
+                    // Mandar al dashboard de admin (y el admin_dashboard acepta ?user_type=admin)
+                    window.location.href = "{% url 'dashboard' %}?user_type=admin";
+                    // alternativa directa: window.location.href = "{% url 'admin_dashboard' %}?user_type=admin";
+                } else {
+                    window.location.href = "{% url 'dashboard' %}?user_type=user";
+                    // alternativa directa: window.location.href = "{% url 'user_dashboard' %}?user_type=user";
+                }
             } else {
                 document.getElementById('login-msg').textContent = 'Usuario o contraseña incorrectos';
             }
@@ -173,7 +165,7 @@
                 return;
             }
             USERS[u] = {password: p, role: 'user'};
-            document.getElementById('reg-msg').textContent = '¡Usuario creado! Puedes iniciar sesión.';
+            document.getElementById('reg-msg').textContent = '¡Usuario creado! Puede iniciar sesión.';
         }
 
         function logout(){
@@ -187,7 +179,16 @@
                 const li = document.createElement('li');
                 li.id = 'dashboard-link';
                 const a = document.createElement('a');
-                a.href = "{% url 'dashboard' %}";
+
+                // Leer al usuario actual desde localStorage
+                const currentUser = JSON.parse(localStorage.getItem('CURRENT_USER'));
+
+                if (currentUser && currentUser.role === 'admin') {
+                    a.href = "{% url 'admin_dashboard' %}?user_type=admin";
+                } else {
+                    a.href = "{% url 'user_dashboard' %}?user_type=user";
+                }
+
                 a.textContent = "Dashboard";
                 li.appendChild(a);
                 nav.appendChild(li);

@@ -244,7 +244,7 @@ Acción 1.2:
 A este login se le agregó el dashboard que también está sujeto a cambios.
 
 
-Día 4 (Final):
+Día 4:
 
 -Se completo el contenido de la pagina nosotros.html con histroia, objetivos, vision, alcance e invitación de la empresa.
 -se creó el archivo nosotros.css para aplicar un diseño personalizado con colores naturales enfocados en alimentación  saludable.
@@ -258,3 +258,17 @@ Día 4 (Final):
     -Bordes visibles en imagenes y tarjetas.
     -Estilo para el boton de favoritos con efecto de activación.
 -Se implemento un script en productos.html para la funcionalidad de favoritos (marcar/desmarcar productos de forma visual)
+
+
+Día 5 (Final):
+
+
+Acción 1:
+
+Se implemento el crud para dashboard de usuarios (favoritos) y administradores (inventario de las distribuidoras/tiendas).
+
+# Usuarios ya creados dentro del sistema: 
+# admin1 1234 Para vista admin
+# user1 abcd Para vista usuario
+
+Para testear y probar el sistema

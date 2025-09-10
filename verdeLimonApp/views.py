@@ -1,20 +1,135 @@
-from django.shortcuts import render
 
-# Create your views here.
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+
+# --- Datos Dummy (simulando una base de datos) ---
+# Lista de productos dummy
+productos_dummy = [
+    {
+        'id': 1,
+        'nombre': 'Manzanas Orgánicas',
+        'descripcion': 'Manzanas rojas orgánicas cultivadas sin pesticidas',
+        'categoria': 'Frutas',
+        'precio': 2500.00,
+        'stock': 45,
+        'valor_nutricional': 'Calorías: 52 por 100g, Fibra: 2.4g, Vitamina C: 4.6mg, Potasio: 107mg',
+        'centro_distribucion': 'Pulso Verde Copiapó',
+        'fecha_creacion': '2024-01-15',
+        'imagen': 'images/manzana.png'
+    },
+    {
+        'id': 2,
+        'nombre': 'Palta Hass',
+        'descripcion': 'Paltas Hass premium, perfectas para ensaladas y tostadas',
+        'categoria': 'Frutas',
+        'precio': 1800.00,
+        'stock': 23,
+        'valor_nutricional': 'Calorías: 160 por 100g, Grasas saludables: 15g, Fibra: 7g, Potasio: 485mg',
+        'centro_distribucion': 'Marea Sana Caldera',
+        'fecha_creacion': '2024-01-20',
+        'imagen': 'images/palta.png'
+    },
+    {
+        'id': 3,
+        'nombre': 'Quinoa Real',
+        'descripcion': 'Quinoa boliviana de alta calidad, rica en proteínas',
+        'categoria': 'Cereales',
+        'precio': 3200.00,
+        'stock': 8,
+        'valor_nutricional': 'Calorías: 368 por 100g, Proteínas: 14g, Fibra: 7g, Hierro: 4.6mg',
+        'centro_distribucion': 'Valle Verde Vallenar',
+        'fecha_creacion': '2024-02-01',
+        'imagen': 'images/quinua.png'
+    }
+]
+
+# Lista de movimientos de inventario dummy
+movimientos_dummy = [
+    {
+        'id': 1,
+        'producto': 'Manzanas Orgánicas',
+        'tipo_movimiento': 'entrada',
+        'cantidad': 50,
+        'motivo': 'Stock inicial del producto',
+        'usuario': 'admin',
+        'fecha': '2024-01-15 10:30:00',
+        'stock_anterior': 0,
+        'stock_nuevo': 50
+    },
+    {
+        'id': 2,
+        'producto': 'Palta Hass',
+        'tipo_movimiento': 'entrada',
+        'cantidad': 30,
+        'motivo': 'Stock inicial del producto',
+        'usuario': 'admin',
+        'fecha': '2024-01-20 14:15:00',
+        'stock_anterior': 0,
+        'stock_nuevo': 30
+    },
+    {
+        'id': 3,
+        'producto': 'Quinoa Real',
+        'tipo_movimiento': 'entrada',
+        'cantidad': 15,
+        'motivo': 'Stock inicial del producto',
+        'usuario': 'admin',
+        'fecha': '2024-02-01 09:45:00',
+        'stock_anterior': 0,
+        'stock_nuevo': 15
+    },
+    {
+        'id': 4,
+        'producto': 'Palta Hass',
+        'tipo_movimiento': 'salida',
+        'cantidad': 7,
+        'motivo': 'Venta a cliente',
+        'usuario': 'vendedor1',
+        'fecha': '2024-02-05 16:20:00',
+        'stock_anterior': 30,
+        'stock_nuevo': 23
+    },
+    {
+        'id': 5,
+        'producto': 'Quinoa Real',
+        'tipo_movimiento': 'salida',
+        'cantidad': 7,
+        'motivo': 'Venta a cliente',
+        'usuario': 'vendedor2',
+        'fecha': '2024-02-10 11:30:00',
+        'stock_anterior': 15,
+        'stock_nuevo': 8
+    }
+]
+
+# Usuarios dummy para simulación de acceso
+usuarios_dummy = {
+    'admin': {'password': 'admin123', 'role': 'admin', 'name': 'Administrador'},
+    'user1': {'password': 'user123', 'role': 'user', 'name': 'Usuario Regular'},
+    'vendedor1': {'password': 'vend123', 'role': 'user', 'name': 'Vendedor 1'},
+    'vendedor2': {'password': 'vend123', 'role': 'user', 'name': 'Vendedor 2'}
+}
+
+# --- Vistas Principales ---
 
 def index(request):
+    """Renderiza la página de inicio."""
     return render(request, "verdeLimonTemplates/index.html")
 
 def productos(request):
-    return render(request, "verdeLimonTemplates/productos.html")
+    """Renderiza la página de productos con datos dummy."""
+    return render(request, "verdeLimonTemplates/productos.html", {"productos": productos_dummy})
 
 def nosotros(request):
+    """Renderiza la página 'Sobre Nosotros'."""
     return render(request, "verdeLimonTemplates/nosotros.html")
 
 def contacto(request):
+    """Renderiza la página de contacto."""
     return render(request, "verdeLimonTemplates/contacto.html")
 
 def distribucion(request):
+    """Renderiza la página de distribución con ubicaciones dummy."""
     ubicaciones = [
         # ------------------- Copiapó -------------------
         {
@@ -176,5 +291,106 @@ def distribucion(request):
     contexto = {"ubicaciones": ubicaciones}
     return render(request, "verdeLimonTemplates/distribucion.html", contexto)
 
+# --- Vistas de Dashboard ---
+
+# Usuarios ya creados dentro del sistema: 
+# admin1 1234 Para vista admin
+# user1 abcd Para vista usuario
+
+
 def dashboard_view(request):
-    return render(request, 'verdeLimonTemplates/dashboard.html')
+    """Redirige al dashboard de admin o usuario según el parámetro 'user_type'."""
+    user_type = request.GET.get('user_type', 'user')
+    if user_type == 'admin':
+        return redirect('admin_dashboard')
+    else:
+        return redirect('user_dashboard')
+
+def admin_dashboard(request):
+    """Dashboard para administradores: permite agregar productos y ver historial de inventario."""
+    # Simulación de restricción de acceso: Solo permite el acceso si el usuario es 'admin'
+
+    # Verificar acceso de administrador usando parámetro user_type o sesión
+    user_type = request.GET.get("user_type")
+    session_user_type = request.session.get("user_type")
+    
+    # Si no es admin, redirigir al dashboard de usuario
+    if user_type != "admin" and session_user_type != "admin":
+        # Establecer mensaje de error en la sesión
+        request.session['error_message'] = "Acceso denegado. Se requieren privilegios de administrador."
+        return redirect("user_dashboard")
+    
+    # Establecer el tipo de usuario en la sesión para futuras verificaciones
+    if user_type == "admin":
+        request.session["user_type"] = "admin"
+
+    if request.method == 'POST':
+        # Lógica para agregar un nuevo producto (simulado)
+        nuevo_producto = {
+            'id': len(productos_dummy) + 1,
+            'nombre': request.POST.get('nombre'),
+            'descripcion': request.POST.get('descripcion'),
+            'categoria': request.POST.get('categoria'),
+            'precio': float(request.POST.get('precio')),
+            'stock': int(request.POST.get('stock')),
+            'valor_nutricional': request.POST.get('valor_nutricional'),
+            'centro_distribucion': request.POST.get('centro_distribucion'),
+            'fecha_creacion': '2024-03-15',
+            'imagen': 'images/' # Imagen por defecto
+        }
+        productos_dummy.append(nuevo_producto)
+        
+        # Simular registro de movimiento de inventario
+        nuevo_movimiento = {
+            'id': len(movimientos_dummy) + 1,
+            'producto': nuevo_producto['nombre'],
+            'tipo_movimiento': 'entrada',
+            'cantidad': nuevo_producto['stock'],
+            'motivo': 'Stock inicial del producto',
+            'usuario': 'admin',
+            'fecha': '2024-03-15 12:00:00',
+            'stock_anterior': 0,
+            'stock_nuevo': nuevo_producto['stock']
+        }
+        movimientos_dummy.append(nuevo_movimiento)
+        
+        # Establecer mensaje de éxito
+        request.session['success_message'] = f"Producto '{nuevo_producto['nombre']}' agregado exitosamente."
+
+    return render(request, "verdeLimonTemplates/admin_dashboard.html", {
+        "productos": productos_dummy,
+        "movimientos": movimientos_dummy
+    })
+
+def user_dashboard(request):
+    """Dashboard para usuarios: permite ver y gestionar productos favoritos."""
+    favoritos_ids = request.session.get('favoritos', [])
+    productos_favoritos = [p for p in productos_dummy if p['id'] in favoritos_ids]
+    return render(request, "verdeLimonTemplates/user_dashboard.html", {
+        "productos": productos_dummy,
+        "productos_favoritos": productos_favoritos
+    })
+
+# --- Vistas para Favoritos (AJAX) ---
+
+def add_to_favorites(request):
+    """Agrega un producto a la lista de favoritos del usuario (simulado con sesión)."""
+    if request.method == 'POST':
+        product_id = int(request.POST.get('product_id'))
+        favoritos = request.session.get('favoritos', [])
+        if product_id not in favoritos:
+            favoritos.append(product_id)
+            request.session['favoritos'] = favoritos
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Método no permitido.'})
+
+def remove_from_favorites(request):
+    """Quita un producto de la lista de favoritos del usuario (simulado con sesión)."""
+    if request.method == 'POST':
+        product_id = int(request.POST.get('product_id'))
+        favoritos = request.session.get('favoritos', [])
+        if product_id in favoritos:
+            favoritos.remove(product_id)
+            request.session['favoritos'] = favoritos
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Método no permitido.'})
