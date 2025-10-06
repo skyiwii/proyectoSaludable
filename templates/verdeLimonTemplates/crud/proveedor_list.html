@@ -1,0 +1,36 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Proveedores</h2>
+<a href="{% url 'proveedor_add' %}" class="btn btn-primary mb-3">Agregar Proveedor</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>RUT</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for proveedor in proveedores %}
+        <tr>
+            <td>{{ proveedor.id }}</td>
+            <td>{{ proveedor.proveedor_nombre }}</td>
+            <td>{{ proveedor.proveedor_rut }}</td>
+            <td>{{ proveedor.proveedor_email }}</td>
+            <td>{{ proveedor.proveedor_telefono }}</td>
+            <td>{{ proveedor.proveedor_direccion_id }}</td>
+            <td>
+                <a href="{% url 'proveedor_edit' proveedor.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'proveedor_delete' proveedor.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

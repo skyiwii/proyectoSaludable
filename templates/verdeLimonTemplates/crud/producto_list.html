@@ -1,0 +1,36 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Productos</h2>
+<a href="{% url 'producto_add' %}" class="btn btn-primary mb-3">Agregar Producto</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Precio Referencial</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.id }}</td>
+            <td>{{ producto.producto_nombre }}</td>
+            <td>{{ producto.producto_descripcion }}</td>
+            <td>{{ producto.id_categoria.categoria_nombre }}</td>
+            <td>{{ producto.producto_precio_referencial }}</td>
+            <td>{{ producto.get_producto_estado_display }}</td>
+            <td>
+                <a href="{% url 'producto_edit' producto.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'producto_delete' producto.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

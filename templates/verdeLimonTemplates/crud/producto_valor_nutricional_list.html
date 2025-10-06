@@ -1,0 +1,40 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Valores Nutricionales de Productos</h2>
+<a href="{% url 'producto_valor_nutricional_add' %}" class="btn btn-primary mb-3">Agregar Valor Nutricional</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID Producto</th>
+            <th>Calorías</th>
+            <th>Proteínas</th>
+            <th>Carbohidratos</th>
+            <th>Grasas</th>
+            <th>Fibra</th>
+            <th>Sodio</th>
+            <th>Azúcar</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for valor in valores_nutricionales %}
+        <tr>
+            <td>{{ valor.id_producto.producto_nombre }}</td>
+            <td>{{ valor.calorias }}</td>
+            <td>{{ valor.proteinas }}</td>
+            <td>{{ valor.carbohidratos }}</td>
+            <td>{{ valor.grasas }}</td>
+            <td>{{ valor.fibra }}</td>
+            <td>{{ valor.sodio }}</td>
+            <td>{{ valor.azucar }}</td>
+            <td>
+                <a href="{% url 'producto_valor_nutricional_edit' valor.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'producto_valor_nutricional_delete' valor.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

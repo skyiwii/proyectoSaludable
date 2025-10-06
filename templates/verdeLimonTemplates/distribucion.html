@@ -7,6 +7,65 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'css/distribucion.css' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .distribucion-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .selector-lugar {
+            margin: 2rem 0;
+        }
+        .selector-lugar select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .detalle-lugar {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding: 2rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .detalle-imagen {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .detalle-texto {
+            flex: 1;
+        }
+        .detalle-texto h2 {
+            color: #2e7d32;
+            margin-bottom: 1rem;
+        }
+        .info-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .tipo-badge {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar global -->
@@ -21,6 +80,17 @@
                 <li><a href="{% url 'productos' %}">Productos</a></li>
                 <li><a href="{% url 'nosotros' %}">Sobre nosotros</a></li>
                 <li><a href="{% url 'contacto' %}">Contacto</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
+                    {% if user.usuario_rol == 'admin' %}
+                        <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                    {% else %}
+                        <li><a href="{% url 'user_dashboard' %}">User Dashboard</a></li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>
@@ -29,17 +99,17 @@
     <section class="distribucion-content">
         <h1>Nuestra Distribución</h1>
         <p>
-            Explora nuestros centros, kioscos, supermercados y bazares. Cada lugar ofrece productos naturales y saludables, seleccionados para cuidar tu alimentación y bienestar.
+            Explora nuestros centros de distribución. Cada lugar ofrece productos naturales y saludables, seleccionados para cuidar tu alimentación y bienestar.
         </p>
 
         <!-- Menú único de selección -->
         <div class="selector-lugar">
-            <label for="lugar">Selecciona un lugar:</label>
+            <label for="lugar"><strong>Selecciona un centro de distribución:</strong></label>
             <select id="lugar" onchange="mostrarDetalle()">
-                <option value="">-- Selecciona --</option>
-                {% for lugar in ubicaciones %}
-                    <option value="{{ forloop.counter0 }}">
-                        {{ lugar.tipo }} - {{ lugar.nombre }} - {{ lugar.ciudad }}{% if lugar.direccion_corta %} - {{ lugar.direccion_corta }}{% endif %}
+                <option value="">-- Selecciona un centro --</option>
+                {% for centro in centros_distribucion %}
+                    <option value="{{ centro.id }}">
+                        {{ centro.centro_nombre }} - {{ centro.id_direccion.direccion_ciudad }}
                     </option>
                 {% endfor %}
             </select>
@@ -47,50 +117,143 @@
 
         <!-- Detalle del lugar -->
         <div id="detalle-lugar" class="detalle-lugar" style="display:none;">
-            <img id="detalle-imagen" src="" alt="">
+            <div>
+                <img id="detalle-imagen" src="" alt="" class="detalle-imagen">
+            </div>
             <div class="detalle-texto">
                 <h2 id="detalle-nombre"></h2>
-                <p id="detalle-ciudad" class="ciudad"></p>
-                <p id="detalle-tipo" class="tipo"></p>
-                <p id="detalle-direccion" class="direccion"></p>
-                <p id="detalle-descripcion" class="descripcion"></p>
-                <ul id="detalle-productos" class="productos"></ul>
+                <div class="tipo-badge" id="detalle-tipo"></div>
+                <div class="descripcion-centro" id="detalle-descripcion" style="margin: 1rem 0; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #4caf50;">
+                    <h5 style="color: #2e7d32; margin-bottom: 0.5rem;">¿Qué vendemos aquí?</h5>
+                    <p style="margin: 0; color: #555;"></p>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ciudad:</span> <span id="detalle-ciudad"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Dirección:</span> <span id="detalle-direccion"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Región:</span> <span id="detalle-region"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">País:</span> <span id="detalle-pais"></span>
+                </div>
+                <div id="detalle-contactos" class="mt-3">
+                    <h4>Información de Contacto:</h4>
+                    <div id="contactos-lista"></div>
+                </div>
+                
+                <!-- Productos disponibles en este centro -->
+                <div id="detalle-productos" class="mt-4">
+                    <h4>Productos Disponibles:</h4>
+                    <div id="productos-lista" class="productos-centro-grid"></div>
+                </div>
             </div>
         </div>
+
+        {% if not centros_distribucion %}
+        <div class="alert alert-info mt-4">
+            <h4>No hay centros de distribución disponibles</h4>
+            <p>Actualmente no tenemos centros de distribución registrados. Por favor, vuelve más tarde.</p>
+        </div>
+        {% endif %}
     </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+<<<<<<< Updated upstream
         // Pasar los datos de Python a JS
         const lugares = {{ ubicaciones|safe }};
+=======
+        const centrosDistribucion = {{ centros_distribucion_json|safe }};
+>>>>>>> Stashed changes
 
         function mostrarDetalle() {
             const select = document.getElementById("lugar");
-            const index = select.value;
+            const centroId = parseInt(select.value);
 
-            if (index === "") {
+            if (!centroId) {
                 document.getElementById("detalle-lugar").style.display = "none";
                 return;
             }
 
-            const lugar = lugares[index];
+            const centro = centrosDistribucion.find(c => c.id === centroId);
+            
+            if (!centro) {
+                document.getElementById("detalle-lugar").style.display = "none";
+                return;
+            }
 
-            document.getElementById("detalle-nombre").textContent = lugar.nombre;
-            document.getElementById("detalle-ciudad").textContent = "Ciudad: " + lugar.ciudad;
-            document.getElementById("detalle-tipo").textContent = "Tipo: " + lugar.tipo;
-            document.getElementById("detalle-direccion").textContent = "Dirección: " + (lugar.direccion_completa || "");
-            document.getElementById("detalle-imagen").src = "{% static '' %}" + lugar.imagen;
-            document.getElementById("detalle-imagen").alt = lugar.nombre;
-            document.getElementById("detalle-descripcion").textContent = lugar.descripcion;
+            // Actualizar información del centro
+            document.getElementById("detalle-nombre").textContent = centro.centro_nombre;
+            document.getElementById("detalle-tipo").textContent = centro.centro_tipo.charAt(0).toUpperCase() + centro.centro_tipo.slice(1);
+            
+            // Actualizar descripción del centro
+            const descripcionElement = document.getElementById("detalle-descripcion");
+            const descripcionTexto = descripcionElement.querySelector("p");
+            if (centro.centro_descripcion) {
+                descripcionTexto.textContent = centro.centro_descripcion;
+                descripcionElement.style.display = "block";
+            } else {
+                descripcionTexto.textContent = "No hay descripción disponible para este centro.";
+                descripcionElement.style.display = "block";
+            }
+            
+            document.getElementById("detalle-ciudad").textContent = centro.direccion.direccion_ciudad;
+            document.getElementById("detalle-direccion").textContent = centro.direccion.direccion_calle;
+            document.getElementById("detalle-region").textContent = centro.direccion.direccion_region;
+            document.getElementById("detalle-pais").textContent = centro.direccion.direccion_pais;
 
-            // Productos (si existen)
-            const ul = document.getElementById("detalle-productos");
-            ul.innerHTML = "";
-            if (lugar.productos && lugar.productos.length > 0) {
-                lugar.productos.forEach(prod => {
-                    const li = document.createElement("li");
-                    li.textContent = prod;
-                    ul.appendChild(li);
+            // Imagen del centro
+            const imagenElement = document.getElementById("detalle-imagen");
+            if (centro.centro_imagen) {
+                imagenElement.src = centro.centro_imagen;
+            } else {
+                imagenElement.src = "{% static 'images/oficinas.jpg' %}";
+            }
+            imagenElement.alt = centro.centro_nombre;
+
+            // Mostrar contactos
+            const contactosLista = document.getElementById("contactos-lista");
+            contactosLista.innerHTML = "";
+            
+            if (centro.contactos && centro.contactos.length > 0) {
+                centro.contactos.forEach(contacto => {
+                    const div = document.createElement("div");
+                    div.className = "info-item";
+                    div.innerHTML = `<span class="info-label">${contacto.contacto_tipo.charAt(0).toUpperCase() + contacto.contacto_tipo.slice(1)}:</span> ${contacto.contacto_valor}`;
+                    contactosLista.appendChild(div);
                 });
+            } else {
+                contactosLista.innerHTML = '<div class="info-item">No hay información de contacto disponible.</div>';
+            }
+
+            // Mostrar productos disponibles
+            const productosLista = document.getElementById("productos-lista");
+            productosLista.innerHTML = "";
+            
+            if (centro.productos && centro.productos.length > 0) {
+                centro.productos.forEach(producto => {
+                    const div = document.createElement("div");
+                    div.className = "producto-centro-item";
+                    
+                    const imagenSrc = producto.producto_imagen || "{% static 'images/default-product.png' %}";
+                    
+                    div.innerHTML = `
+                        <div class="producto-centro-imagen">
+                            <img src="${imagenSrc}" alt="${producto.producto_nombre}">
+                        </div>
+                        <div class="producto-centro-info">
+                            <h5>${producto.producto_nombre}</h5>
+                            <p class="producto-precio">$${producto.producto_precio}</p>
+                            <p class="producto-stock">${producto.inventario_cantidad} unidades disponibles</p>
+                        </div>
+                    `;
+                    productosLista.appendChild(div);
+                });
+            } else {
+                productosLista.innerHTML = '<div class="sin-productos-centro">No hay productos disponibles en este centro.</div>';
             }
 
             document.getElementById("detalle-lugar").style.display = "flex";

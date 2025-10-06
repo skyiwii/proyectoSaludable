@@ -1,0 +1,32 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Centros de Distribución</h2>
+<a href="{% url 'centro_distribucion_add' %}" class="btn btn-primary mb-3">Agregar Centro de Distribución</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for centro in centros_distribucion %}
+        <tr>
+            <td>{{ centro.id }}</td>
+            <td>{{ centro.centro_nombre }}</td>
+            <td>{{ centro.id_direccion }}</td>
+            <td>{{ centro.get_centro_tipo_display }}</td>
+            <td>
+                <a href="{% url 'centro_distribucion_edit' centro.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'centro_distribucion_delete' centro.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
