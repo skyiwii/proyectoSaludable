@@ -55,9 +55,6 @@ class CentroDistribucion(models.Model):
     def __str__(self):
         return self.centro_nombre
 
-<<<<<<< Updated upstream
-# Create your models here.
-=======
 class Producto(models.Model):
     producto_nombre = models.CharField(max_length=100)
     producto_descripcion = models.TextField(blank=True, null=True)
@@ -151,4 +148,3 @@ class FavoritoCliente(models.Model):
     def __str__(self):
         return f"{self.id_usuario.usuario_email} - {self.id_producto.producto_nombre}"
 
->>>>>>> Stashed changes

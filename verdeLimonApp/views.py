@@ -1,14 +1,3 @@
-<<<<<<< Updated upstream
-from django.shortcuts import render
-
-# Create your views here.
-
-def index(request):
-    return render(request, "verdeLimonTemplates/index.html")
-
-def productos(request):
-    return render(request, "verdeLimonTemplates/productos.html")
-=======
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate, logout
@@ -43,7 +32,6 @@ def productos(request):
         "productos": productos, 
         "favoritos_ids": favoritos_ids
     })
->>>>>>> Stashed changes
 
 def nosotros(request):
     return render(request, "verdeLimonTemplates/nosotros.html")
@@ -55,60 +43,6 @@ import json
 from django.core.serializers import serialize
 
 def distribucion(request):
-<<<<<<< Updated upstream
-    ubicaciones = [
-        # ------------------- Copiapó -------------------
-        {
-            "nombre": "Pulso Verde Copiapó",
-            "tipo": "Centro de Distribución",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Av. Atacama 1234",
-            "direccion_completa": "Av. Atacama 1234, Centro, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_centro.jpg",
-            "descripcion": "Distribución al por mayor de frutas, verduras y productos naturales de la región de Atacama.",
-            "productos": ["Frutas frescas", "Verduras locales", "Jugos naturales", "Snacks saludables"]
-        },
-        {
-            "nombre": "Frutalía",
-            "tipo": "Supermercado",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Calle Prat 567",
-            "direccion_completa": "Calle Prat 567, Centro, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_supermercado.jpg",
-            "descripcion": "Supermercado especializado en productos orgánicos y saludables.",
-            "productos": ["Frutas orgánicas", "Verduras orgánicas", "Cereales integrales", "Bebidas naturales"]
-        },
-        {
-            "nombre": "Raíces y Semillas",
-            "tipo": "Bazar",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Av. Chacabuco 890",
-            "direccion_completa": "Av. Chacabuco 890, Barrio Norte, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_bazar.jpg",
-            "descripcion": "Bazar con productos saludables, snacks y artesanías locales.",
-            "productos": ["Snacks naturales", "Miel local", "Infusiones", "Aceites esenciales"]
-        },
-        {
-            "nombre": "Bocado Vital",
-            "tipo": "Kiosco",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Plaza de Armas 12",
-            "direccion_completa": "Plaza de Armas 12, Centro, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_kiosco1.jpg",
-            "descripcion": "Kiosco con frutas listas para llevar y productos saludables.",
-            "productos": ["Frutas cortadas", "Barras de cereales", "Jugos naturales"]
-        },
-        {
-            "nombre": "Verde Express",
-            "tipo": "Kiosco",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Av. Copayapu 45",
-            "direccion_completa": "Av. Copayapu 45, Sector Norte, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_kiosco2.jpg",
-            "descripcion": "Kiosco con productos frescos y snacks saludables para llevar.",
-            "productos": ["Frutas frescas", "Frutos secos", "Bebidas naturales"]
-        },
-=======
     centros_distribucion = CentroDistribucion.objects.select_related('id_direccion').all()
     
     centros_distribucion_data = []
@@ -149,7 +83,6 @@ def distribucion(request):
             'contactos': contactos_data,
             'productos': productos_data
         })
->>>>>>> Stashed changes
 
     contexto = {
         "centros_distribucion": centros_distribucion,
@@ -157,10 +90,6 @@ def distribucion(request):
     }
     return render(request, "verdeLimonTemplates/distribucion.html", contexto)
 
-<<<<<<< Updated upstream
-def dashboard_view(request):
-    return render(request, 'verdeLimonTemplates/dashboard.html')
-=======
 
 
 # --- Vistas de Autenticación ---
@@ -480,4 +409,3 @@ class FavoritoClienteDeleteView(DeleteView):
     template_name = 'verdeLimonTemplates/crud/favorito_cliente_confirm_delete.html'
     success_url = reverse_lazy('favorito_cliente_list')
 
->>>>>>> Stashed changes

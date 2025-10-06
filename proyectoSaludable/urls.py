@@ -25,11 +25,6 @@ urlpatterns = [
     path('nosotros/', views.nosotros, name="nosotros"),
     path('contacto/', views.contacto, name="contacto"),
     path("distribucion/", views.distribucion, name="distribucion"),
-<<<<<<< Updated upstream
-    path('dashboard/', views.dashboard_view, name='dashboard'),
-]
-
-=======
     path("admin-dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("user-dashboard/", views.user_dashboard, name="user_dashboard"),
     path("add-to-favorites/", views.add_to_favorites, name="add_to_favorites"),
@@ -109,4 +104,3 @@ from django.conf.urls.static import static
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
->>>>>>> Stashed changes
