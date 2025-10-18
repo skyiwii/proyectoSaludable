@@ -1,0 +1,30 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Categorías</h2>
+<a href="{% url 'categoria_add' %}" class="btn btn-primary mb-3">Agregar Categoría</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for categoria in categorias %}
+        <tr>
+            <td>{{ categoria.id }}</td>
+            <td>{{ categoria.categoria_nombre }}</td>
+            <td>{{ categoria.categoria_descripcion }}</td>
+            <td>
+                <a href="{% url 'categoria_edit' categoria.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'categoria_delete' categoria.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

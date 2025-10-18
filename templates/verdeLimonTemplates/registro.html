@@ -1,0 +1,473 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - Verde Limón</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem 0;
+        }
+        
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1000px;
+            min-height: 600px;
+            display: flex;
+        }
+        
+        .register-left {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .register-right {
+            padding: 3rem;
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        
+        .logo-section {
+            margin-bottom: 2rem;
+        }
+        
+        .logo-section img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+        
+        .logo-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo-section p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .form-title {
+            color: #2e7d32;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            flex: 1;
+        }
+        
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            width: 100%;
+        }
+        
+        .form-control:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+            background: white;
+        }
+        
+        .form-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .btn-register {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-register:hover {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        
+        .divider span {
+            background: white;
+            padding: 0 1rem;
+            color: #666;
+        }
+        
+        .login-link {
+            text-align: center;
+        }
+        
+        .login-link a {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .login-link a:hover {
+            color: #2e7d32;
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-home:hover {
+            color: #e8f5e8;
+            transform: translateX(-5px);
+        }
+        
+        .alert {
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .register-container {
+                flex-direction: column;
+                margin: 1rem;
+            }
+            
+            .register-left {
+                padding: 2rem;
+            }
+            
+            .register-right {
+                padding: 2rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'index' %}" class="back-home">
+        <i class="fas fa-arrow-left"></i> Volver al inicio
+    </a>
+    
+    <div class="register-container">
+        <div class="register-left">
+            <div class="logo-section">
+                <img src="{% static 'images/limon.png' %}" alt="Logo Verde Limón">
+                <h2>Verde Limón</h2>
+                <p>Productos frescos y saludables para tu bienestar</p>
+            </div>
+            <div>
+                <h3>¡Bienvenido a Verde Limón!</h3>
+                <p>Regístrate para acceder a nuestros productos naturales y disfrutar de una experiencia personalizada.</p>
+            </div>
+        </div>
+        
+        <div class="register-right">
+            <div>
+                <h1 class="form-title">Crear Cuenta</h1>
+                <p class="form-subtitle">Completa tus datos para registrarte</p>
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Por favor, corrige los errores a continuación.
+                    </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <i class="fas fa-user form-icon"></i>
+                            <input type="text" 
+                                   name="usuario_nombre" 
+                                   class="form-control" 
+                                   placeholder="Nombre"
+                                   value="{{ form.usuario_nombre.value|default:'' }}"
+                                   required>
+                            {% if form.usuario_nombre.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.usuario_nombre.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <i class="fas fa-user form-icon"></i>
+                            <input type="text" 
+                                   name="usuario_apellido" 
+                                   class="form-control" 
+                                   placeholder="Apellido"
+                                   value="{{ form.usuario_apellido.value|default:'' }}"
+                                   required>
+                            {% if form.usuario_apellido.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.usuario_apellido.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-id-card form-icon"></i>
+                        <input type="text" 
+                               name="usuario_rut" 
+                               class="form-control" 
+                               placeholder="RUT (ej: 12345678-9)"
+                               value="{{ form.usuario_rut.value|default:'' }}"
+                               required>
+                        {% if form.usuario_rut.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.usuario_rut.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-envelope form-icon"></i>
+                        <input type="email" 
+                               name="usuario_email" 
+                               class="form-control" 
+                               placeholder="Correo electrónico"
+                               value="{{ form.usuario_email.value|default:'' }}"
+                               required>
+                        {% if form.usuario_email.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.usuario_email.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-user form-icon"></i>
+                        <input type="text" 
+                               name="username" 
+                               class="form-control" 
+                               placeholder="Nombre de usuario"
+                               value="{{ form.username.value|default:'' }}"
+                               required>
+                        {% if form.username.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.username.errors %}
+                                    <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Campo oculto para establecer el rol como cliente por defecto -->
+                    <input type="hidden" name="usuario_rol" value="cliente">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <i class="fas fa-lock form-icon"></i>
+                            <input type="password" 
+                                   name="password1" 
+                                   class="form-control" 
+                                   placeholder="Contraseña"
+                                   required>
+                            {% if form.password1.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.password1.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <i class="fas fa-lock form-icon"></i>
+                            <input type="password" 
+                                   name="password2" 
+                                   class="form-control" 
+                                   placeholder="Confirmar contraseña"
+                                   required>
+                            {% if form.password2.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.password2.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <button type="submit" class="btn btn-register">
+                        <i class="fas fa-user-plus"></i> Crear Cuenta
+                    </button>
+                </form>
+                
+                <div class="divider">
+                    <span>¿Ya tienes cuenta?</span>
+                </div>
+                
+                <div class="login-link">
+                    <a href="{% url 'login' %}">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Validación de RUT chileno
+        function validarRUT(rut) {
+            // Eliminar puntos y guión
+            rut = rut.replace(/\./g, '').replace('-', '');
+
+            // Verificar que tenga al menos 8 caracteres
+            if (rut.length < 8) return false;
+
+            // Separar número y dígito verificador
+            const numero = rut.slice(0, -1);
+            const dv = rut.slice(-1).toLowerCase();
+
+            // Verificar que el número sea numérico
+            if (!/^\d+$/.test(numero)) return false;
+
+            // Calcular dígito verificador
+            let suma = 0;
+            let multiplicador = 2;
+
+            for (let i = numero.length - 1; i >= 0; i--) {
+                suma += parseInt(numero[i]) * multiplicador;
+                multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+            }
+
+            const resto = 11 - (suma % 11);
+            let dvCalculado;
+            if (resto === 11) {
+                dvCalculado = '0';
+            } else if (resto === 10) {
+                dvCalculado = 'k';
+            } else {
+                dvCalculado = resto.toString();
+            }
+
+            return dv === dvCalculado;
+        }
+
+        // Formatear RUT mientras se escribe
+        function formatearRUT(input) {
+            let valor = input.value.replace(/\./g, '').replace('-', '');
+
+            if (valor.length > 1) {
+                valor = valor.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + valor.slice(-1);
+            }
+
+            input.value = valor;
+        }
+
+        // Agregar eventos al campo RUT
+        document.addEventListener('DOMContentLoaded', function() {
+            const rutInput = document.querySelector('input[name="usuario_rut"]');
+
+            rutInput.addEventListener('input', function() {
+                formatearRUT(this);
+            });
+
+            rutInput.addEventListener('blur', function() {
+                if (this.value && !validarRUT(this.value)) {
+                    this.setCustomValidity('El RUT ingresado no es válido');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

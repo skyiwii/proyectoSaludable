@@ -1,0 +1,12 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Eliminar Producto</h2>
+<p>¿Estás seguro de que quieres eliminar el producto "{{ object.producto_nombre }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
+    <a href="{% url "producto_list" %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
+

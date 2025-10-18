@@ -1,124 +1,45 @@
-
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-
-# --- Datos Dummy (simulando una base de datos) ---
-# Lista de productos dummy
-productos_dummy = [
-    {
-        'id': 1,
-        'nombre': 'Manzanas Orgánicas',
-        'descripcion': 'Manzanas rojas orgánicas cultivadas sin pesticidas',
-        'categoria': 'Frutas',
-        'precio': 2500.00,
-        'stock': 45,
-        'valor_nutricional': 'Calorías: 52 por 100g, Fibra: 2.4g, Vitamina C: 4.6mg, Potasio: 107mg',
-        'centro_distribucion': 'Pulso Verde Copiapó',
-        'fecha_creacion': '2024-01-15',
-        'imagen': 'images/manzana.png'
-    },
-    {
-        'id': 2,
-        'nombre': 'Palta Hass',
-        'descripcion': 'Paltas Hass premium, perfectas para ensaladas y tostadas',
-        'categoria': 'Frutas',
-        'precio': 1800.00,
-        'stock': 23,
-        'valor_nutricional': 'Calorías: 160 por 100g, Grasas saludables: 15g, Fibra: 7g, Potasio: 485mg',
-        'centro_distribucion': 'Marea Sana Caldera',
-        'fecha_creacion': '2024-01-20',
-        'imagen': 'images/palta.png'
-    },
-    {
-        'id': 3,
-        'nombre': 'Quinoa Real',
-        'descripcion': 'Quinoa boliviana de alta calidad, rica en proteínas',
-        'categoria': 'Cereales',
-        'precio': 3200.00,
-        'stock': 8,
-        'valor_nutricional': 'Calorías: 368 por 100g, Proteínas: 14g, Fibra: 7g, Hierro: 4.6mg',
-        'centro_distribucion': 'Valle Verde Vallenar',
-        'fecha_creacion': '2024-02-01',
-        'imagen': 'images/quinua.png'
-    }
-]
-
-# Lista de movimientos de inventario dummy
-movimientos_dummy = [
-    {
-        'id': 1,
-        'producto': 'Manzanas Orgánicas',
-        'tipo_movimiento': 'entrada',
-        'cantidad': 50,
-        'motivo': 'Stock inicial del producto',
-        'usuario': 'admin',
-        'fecha': '2024-01-15 10:30:00',
-        'stock_anterior': 0,
-        'stock_nuevo': 50
-    },
-    {
-        'id': 2,
-        'producto': 'Palta Hass',
-        'tipo_movimiento': 'entrada',
-        'cantidad': 30,
-        'motivo': 'Stock inicial del producto',
-        'usuario': 'admin',
-        'fecha': '2024-01-20 14:15:00',
-        'stock_anterior': 0,
-        'stock_nuevo': 30
-    },
-    {
-        'id': 3,
-        'producto': 'Quinoa Real',
-        'tipo_movimiento': 'entrada',
-        'cantidad': 15,
-        'motivo': 'Stock inicial del producto',
-        'usuario': 'admin',
-        'fecha': '2024-02-01 09:45:00',
-        'stock_anterior': 0,
-        'stock_nuevo': 15
-    },
-    {
-        'id': 4,
-        'producto': 'Palta Hass',
-        'tipo_movimiento': 'salida',
-        'cantidad': 7,
-        'motivo': 'Venta a cliente',
-        'usuario': 'vendedor1',
-        'fecha': '2024-02-05 16:20:00',
-        'stock_anterior': 30,
-        'stock_nuevo': 23
-    },
-    {
-        'id': 5,
-        'producto': 'Quinoa Real',
-        'tipo_movimiento': 'salida',
-        'cantidad': 7,
-        'motivo': 'Venta a cliente',
-        'usuario': 'vendedor2',
-        'fecha': '2024-02-10 11:30:00',
-        'stock_anterior': 15,
-        'stock_nuevo': 8
-    }
-]
-
-# Usuarios dummy para simulación de acceso
-usuarios_dummy = {
-    'admin': {'password': 'admin123', 'role': 'admin', 'name': 'Administrador'},
-    'user1': {'password': 'user123', 'role': 'user', 'name': 'Usuario Regular'},
-    'vendedor1': {'password': 'vend123', 'role': 'user', 'name': 'Vendedor 1'},
-    'vendedor2': {'password': 'vend123', 'role': 'user', 'name': 'Vendedor 2'}
-}
+from django.contrib.auth import login, authenticate, logout
+from .forms import RegistroForm, LoginForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
+from django.urls import reverse_lazy
+from .models import (
+    Usuario, CategoriaProducto, Direccion, CentroDistribucion, Producto, 
+    ProductoValorNutricional, Inventario, HistorialInventario, 
+    ContactoCentro, Proveedor, FavoritoCliente
+)
+from .forms import (
+    CategoriaProductoForm, DireccionForm, CentroDistribucionForm, ProductoForm, 
+    ProductoValorNutricionalForm, InventarioForm, HistorialInventarioForm, 
+    ContactoCentroForm, ProveedorForm, FavoritoClienteForm
+)
 
 # --- Vistas Principales ---
-
 def index(request):
-    """Renderiza la página de inicio."""
-    return render(request, "verdeLimonTemplates/index.html")
+    # Obtener los 3 productos más recientes
+    productos_recientes = Producto.objects.all().order_by('-id')[:3]
+    return render(request, "verdeLimonTemplates/index.html", {"productos_recientes": productos_recientes})
 
 def productos(request):
-    """Renderiza la página de productos con datos dummy."""
-    return render(request, "verdeLimonTemplates/productos.html", {"productos": productos_dummy})
+    productos = Producto.objects.all()
+    favoritos_ids = []
+
+    if request.user.is_authenticated:
+        favoritos = FavoritoCliente.objects.filter(id_usuario=request.user.id)
+        
+        favoritos_ids = []
+        for f in favoritos:
+            try:
+                producto = Producto.objects.get(pk=f.id_producto)
+                favoritos_ids.append(producto.id)
+            except Producto.DoesNotExist:
+                continue
+    return render(request, "verdeLimonTemplates/productos.html", {
+        "productos": productos, 
+        "favoritos_ids": favoritos_ids
+    })
 
 def nosotros(request):
     """Renderiza la página 'Sobre Nosotros'."""
@@ -128,269 +49,387 @@ def contacto(request):
     """Renderiza la página de contacto."""
     return render(request, "verdeLimonTemplates/contacto.html")
 
+import json
+from django.core.serializers import serialize
+
 def distribucion(request):
-    """Renderiza la página de distribución con ubicaciones dummy."""
-    ubicaciones = [
-        # ------------------- Copiapó -------------------
-        {
-            "nombre": "Pulso Verde Copiapó",
-            "tipo": "Centro de Distribución",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Av. Atacama 1234",
-            "direccion_completa": "Av. Atacama 1234, Centro, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_centro.jpg",
-            "descripcion": "Distribución al por mayor de frutas, verduras y productos naturales de la región de Atacama.",
-            "productos": ["Frutas frescas", "Verduras locales", "Jugos naturales", "Snacks saludables"]
-        },
-        {
-            "nombre": "Frutalía",
-            "tipo": "Supermercado",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Calle Prat 567",
-            "direccion_completa": "Calle Prat 567, Centro, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_supermercado.jpg",
-            "descripcion": "Supermercado especializado en productos orgánicos y saludables.",
-            "productos": ["Frutas orgánicas", "Verduras orgánicas", "Cereales integrales", "Bebidas naturales"]
-        },
-        {
-            "nombre": "Raíces y Semillas",
-            "tipo": "Bazar",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Av. Chacabuco 890",
-            "direccion_completa": "Av. Chacabuco 890, Barrio Norte, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_bazar.jpg",
-            "descripcion": "Bazar con productos saludables, snacks y artesanías locales.",
-            "productos": ["Snacks naturales", "Miel local", "Infusiones", "Aceites esenciales"]
-        },
-        {
-            "nombre": "Bocado Vital",
-            "tipo": "Kiosco",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Plaza de Armas 12",
-            "direccion_completa": "Plaza de Armas 12, Centro, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_kiosco1.jpg",
-            "descripcion": "Kiosco con frutas listas para llevar y productos saludables.",
-            "productos": ["Frutas cortadas", "Barras de cereales", "Jugos naturales"]
-        },
-        {
-            "nombre": "Verde Express",
-            "tipo": "Kiosco",
-            "ciudad": "Copiapó",
-            "direccion_corta": "Av. Copayapu 45",
-            "direccion_completa": "Av. Copayapu 45, Sector Norte, Copiapó, Región de Atacama, Chile",
-            "imagen": "images/copiapo_kiosco2.jpg",
-            "descripcion": "Kiosco con productos frescos y snacks saludables para llevar.",
-            "productos": ["Frutas frescas", "Frutos secos", "Bebidas naturales"]
-        },
+    centros_distribucion = CentroDistribucion.objects.all()
+    
+    centros_distribucion_data = []
+    for centro in centros_distribucion:
+        # Obtener contactos del centro
+        direccion = Direccion.objects.filter(id=centro.id_direccion).first()
+        #contactos
+        contactos = ContactoCentro.objects.filter(id_centro=centro.id)
+        contactos_data = [{"contaco_tipo": c.contacto_tipo, "contacto_valor": c.contacto_valor} for c in contactos]
 
-        # ------------------- Caldera -------------------
-        {
-            "nombre": "Marea Sana",
-            "tipo": "Centro de Distribución",
-            "ciudad": "Caldera",
-            "direccion_corta": "Av. del Mar 101",
-            "direccion_completa": "Av. del Mar 101, Centro, Caldera, Región de Atacama, Chile",
-            "imagen": "images/caldera_centro.jpg",
-            "descripcion": "Distribución de productos saludables con enfoque en pescado, omega3 y productos marinos.",
-            "productos": ["Pescados frescos", "Aceite de pescado", "Alimentos funcionales", "Snacks marinos"]
-        },
-        {
-            "nombre": "Omega Market",
-            "tipo": "Supermercado",
-            "ciudad": "Caldera",
-            "direccion_corta": "Calle Prat 22",
-            "direccion_completa": "Calle Prat 22, Centro, Caldera, Región de Atacama, Chile",
-            "imagen": "images/caldera_supermercado.jpg",
-            "descripcion": "Supermercado con productos ricos en omega3 y alimentos saludables del mar.",
-            "productos": ["Pescados y mariscos", "Suplementos de omega3", "Frutas frescas", "Verduras locales"]
-        },
-        {
-            "nombre": "Coral Vital",
-            "tipo": "Bazar",
-            "ciudad": "Caldera",
-            "direccion_corta": "Av. Pacífico 77",
-            "direccion_completa": "Av. Pacífico 77, Barrio Puerto, Caldera, Región de Atacama, Chile",
-            "imagen": "images/caldera_bazar.jpg",
-            "descripcion": "Bazar con productos del mar, snacks saludables y artesanías locales.",
-            "productos": ["Snacks de algas", "Miel local", "Infusiones", "Aceites naturales"]
-        },
-        {
-            "nombre": "Brisa Marina",
-            "tipo": "Kiosco",
-            "ciudad": "Caldera",
-            "direccion_corta": "Plaza del Puerto 5",
-            "direccion_completa": "Plaza del Puerto 5, Centro, Caldera, Región de Atacama, Chile",
-            "imagen": "images/caldera_kiosco1.jpg",
-            "descripcion": "Kiosco con productos frescos y saludables del mar y tierra.",
-            "productos": ["Pescado en conserva", "Frutas locales", "Jugos naturales"]
-        },
-        {
-            "nombre": "Sol del Pacífico",
-            "tipo": "Kiosco",
-            "ciudad": "Caldera",
-            "direccion_corta": "Av. Sol 12",
-            "direccion_completa": "Av. Sol 12, Sector Norte, Caldera, Región de Atacama, Chile",
-            "imagen": "images/caldera_kiosco2.jpg",
-            "descripcion": "Kiosco con productos saludables y snacks listos para llevar.",
-            "productos": ["Frutas frescas", "Barras de cereales", "Snacks marinos"]
-        },
+        
+        # Obtener productos disponibles en este centro
+        inventarios = Inventario.objects.filter(id_centro=centro.id, inventario_cantidad__gt=0)
+        productos_data = []
+        for inv in inventarios:
+            producto = Producto.objects.filter(id=inv.id_producto).first()
+            if producto:
+                productos_data.append({
+                    'producto_nombre': producto.producto_nombre,
+                    'producto_precio': float(producto.producto_precio),
+                    'inventario_cantidad': inv.inventario_cantidad,
+                    'producto_imagen': producto.producto_imagen.url if producto.producto_imagen else None,
+                })
+        
+        centros_distribucion_data.append({
+            'id': centro.id,
+            'centro_nombre': centro.centro_nombre,
+            'centro_tipo': centro.centro_tipo,
+            'centro_descripcion': centro.centro_descripcion,
+            'centro_imagen': centro.centro_imagen.url if centro.centro_imagen else None,
+            'direccion': {
+                'direccion_calle': direccion.direccion_calle if direccion else "N/A",
+                'direccion_ciudad': direccion.direccion_ciudad if direccion else "N/A",
+                'direccion_region': direccion.direccion_region if direccion else "N/A",
+                'direccion_pais': direccion.direccion_pais if direccion else "N/A",
+                'direccion_codigo_postal': direccion.direccion_codigo_postal if direccion else "N/A",
+            },
+            'contactos': contactos_data,
+            'productos': productos_data,
+        })
 
-        # ------------------- Vallenar -------------------
-        {
-            "nombre": "Valle Verde",
-            "tipo": "Centro de Distribución",
-            "ciudad": "Vallenar",
-            "direccion_corta": "Av. Atacama 300",
-            "direccion_completa": "Av. Atacama 300, Centro, Vallenar, Región de Atacama, Chile",
-            "imagen": "images/vallenar_centro.jpg",
-            "descripcion": "Distribución de frutas, verduras y productos naturales para la provincia del Huasco.",
-            "productos": ["Frutas frescas", "Verduras locales", "Jugos naturales", "Snacks saludables"]
-        },
-        {
-            "nombre": "Huasco Natural",
-            "tipo": "Supermercado",
-            "ciudad": "Vallenar",
-            "direccion_corta": "Calle O'Higgins 45",
-            "direccion_completa": "Calle O'Higgins 45, Centro, Vallenar, Región de Atacama, Chile",
-            "imagen": "images/vallenar_supermercado.jpg",
-            "descripcion": "Supermercado con productos saludables y orgánicos.",
-            "productos": ["Frutas orgánicas", "Verduras locales", "Cereales integrales", "Bebidas naturales"]
-        },
-        {
-            "nombre": "Tierra Viva",
-            "tipo": "Bazar",
-            "ciudad": "Vallenar",
-            "direccion_corta": "Av. Los Pinos 78",
-            "direccion_completa": "Av. Los Pinos 78, Barrio Sur, Vallenar, Región de Atacama, Chile",
-            "imagen": "images/vallenar_bazar.jpg",
-            "descripcion": "Bazar con productos saludables y snacks locales.",
-            "productos": ["Snacks naturales", "Miel local", "Infusiones", "Aceites esenciales"]
-        },
-        {
-            "nombre": "Fresco & Saludable",
-            "tipo": "Kiosco",
-            "ciudad": "Vallenar",
-            "direccion_corta": "Plaza Central 2",
-            "direccion_completa": "Plaza Central 2, Centro, Vallenar, Región de Atacama, Chile",
-            "imagen": "images/vallenar_kiosco1.jpg",
-            "descripcion": "Kiosco con productos frescos listos para llevar.",
-            "productos": ["Frutas frescas", "Barras de cereales", "Jugos naturales"]
-        },
-        {
-            "nombre": "Rincón Verde",
-            "tipo": "Kiosco",
-            "ciudad": "Vallenar",
-            "direccion_corta": "Av. Norte 15",
-            "direccion_completa": "Av. Norte 15, Sector Norte, Vallenar, Región de Atacama, Chile",
-            "imagen": "images/vallenar_kiosco2.jpg",
-            "descripcion": "Kiosco con snacks y productos saludables para llevar.",
-            "productos": ["Frutas frescas", "Frutos secos", "Bebidas naturales"]
-        }
-    ]
-
-    contexto = {"ubicaciones": ubicaciones}
+    contexto = {
+        "centros_distribucion": centros_distribucion,
+        "centros_distribucion_json": json.dumps(centros_distribucion_data)
+    }
     return render(request, "verdeLimonTemplates/distribucion.html", contexto)
 
-# --- Vistas de Dashboard ---
-
-# Usuarios ya creados dentro del sistema: 
-# admin1 1234 Para vista admin
-# user1 abcd Para vista usuario
 
 
-def dashboard_view(request):
-    """Redirige al dashboard de admin o usuario según el parámetro 'user_type'."""
-    user_type = request.GET.get('user_type', 'user')
-    if user_type == 'admin':
-        return redirect('admin_dashboard')
-    else:
-        return redirect('user_dashboard')
-
-def admin_dashboard(request):
-    """Dashboard para administradores: permite agregar productos y ver historial de inventario."""
-    # Simulación de restricción de acceso: Solo permite el acceso si el usuario es 'admin'
-
-    # Verificar acceso de administrador usando parámetro user_type o sesión
-    user_type = request.GET.get("user_type")
-    session_user_type = request.session.get("user_type")
-    
-    # Si no es admin, redirigir al dashboard de usuario
-    if user_type != "admin" and session_user_type != "admin":
-        # Establecer mensaje de error en la sesión
-        request.session['error_message'] = "Acceso denegado. Se requieren privilegios de administrador."
-        return redirect("user_dashboard")
-    
-    # Establecer el tipo de usuario en la sesión para futuras verificaciones
-    if user_type == "admin":
-        request.session["user_type"] = "admin"
-
+# --- Vistas de Autenticación ---
+def registro_view(request):
     if request.method == 'POST':
-        # Lógica para agregar un nuevo producto (simulado)
-        nuevo_producto = {
-            'id': len(productos_dummy) + 1,
-            'nombre': request.POST.get('nombre'),
-            'descripcion': request.POST.get('descripcion'),
-            'categoria': request.POST.get('categoria'),
-            'precio': float(request.POST.get('precio')),
-            'stock': int(request.POST.get('stock')),
-            'valor_nutricional': request.POST.get('valor_nutricional'),
-            'centro_distribucion': request.POST.get('centro_distribucion'),
-            'fecha_creacion': '2024-03-15',
-            'imagen': 'images/' # Imagen por defecto
-        }
-        productos_dummy.append(nuevo_producto)
-        
-        # Simular registro de movimiento de inventario
-        nuevo_movimiento = {
-            'id': len(movimientos_dummy) + 1,
-            'producto': nuevo_producto['nombre'],
-            'tipo_movimiento': 'entrada',
-            'cantidad': nuevo_producto['stock'],
-            'motivo': 'Stock inicial del producto',
-            'usuario': 'admin',
-            'fecha': '2024-03-15 12:00:00',
-            'stock_anterior': 0,
-            'stock_nuevo': nuevo_producto['stock']
-        }
-        movimientos_dummy.append(nuevo_movimiento)
-        
-        # Establecer mensaje de éxito
-        request.session['success_message'] = f"Producto '{nuevo_producto['nombre']}' agregado exitosamente."
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            if user.usuario_rol == 'admin':
+                return redirect('admin_dashboard')
+            else:
+                return redirect('user_dashboard')
+    else:
+        form = RegistroForm()
+    return render(request, 'verdeLimonTemplates/registro.html', {'form': form})
 
-    return render(request, "verdeLimonTemplates/admin_dashboard.html", {
-        "productos": productos_dummy,
-        "movimientos": movimientos_dummy
-    })
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                if user.usuario_rol == 'admin':
+                    return redirect('admin_dashboard')
+                else:
+                    return redirect('user_dashboard')
+            else:
+                pass
+    else:
+        form = LoginForm()
+    return render(request, 'verdeLimonTemplates/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('index')
+
+# --- Vistas de Dashboard ---
+@login_required
+@user_passes_test(lambda u: u.usuario_rol == 'admin', login_url='/user-dashboard/')
+def admin_dashboard(request):
+    total_productos = Producto.objects.count()
+    total_movimientos = HistorialInventario.objects.count()
+    total_centros = CentroDistribucion.objects.count()
+    ultimos_movimientos = HistorialInventario.objects.order_by('-historial_fecha')[:5]
+
+    context = {
+        'total_productos': total_productos,
+        'total_movimientos': total_movimientos,
+        'total_centros': total_centros,
+        'ultimos_movimientos': ultimos_movimientos,
+    }
+    return render(request, "verdeLimonTemplates/admin_dashboard.html", context)
+
+@login_required
 
 def user_dashboard(request):
-    """Dashboard para usuarios: permite ver y gestionar productos favoritos."""
-    favoritos_ids = request.session.get('favoritos', [])
-    productos_favoritos = [p for p in productos_dummy if p['id'] in favoritos_ids]
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    favoritos = FavoritoCliente.objects.filter(id_usuario=request.user.id)
+
+    productos_favoritos = []
+    for favorito in favoritos:
+        producto = Producto.objects.filter(id=favorito.id_producto).first()
+        if producto:
+            productos_favoritos.append({
+                "id_producto": producto.id,
+                "producto": producto,
+                "fecha_agregado": favorito.fecha_agregado
+            })
+
     return render(request, "verdeLimonTemplates/user_dashboard.html", {
-        "productos": productos_dummy,
         "productos_favoritos": productos_favoritos
     })
 
+
+
 # --- Vistas para Favoritos (AJAX) ---
+@login_required
 
 def add_to_favorites(request):
-    """Agrega un producto a la lista de favoritos del usuario (simulado con sesión)."""
     if request.method == 'POST':
         product_id = int(request.POST.get('product_id'))
-        favoritos = request.session.get('favoritos', [])
-        if product_id not in favoritos:
-            favoritos.append(product_id)
-            request.session['favoritos'] = favoritos
+        FavoritoCliente.objects.get_or_create(id_usuario=request.user.id, id_producto=product_id)
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'message': 'Método no permitido.'})
 
+@login_required
+
 def remove_from_favorites(request):
-    """Quita un producto de la lista de favoritos del usuario (simulado con sesión)."""
     if request.method == 'POST':
         product_id = int(request.POST.get('product_id'))
-        favoritos = request.session.get('favoritos', [])
-        if product_id in favoritos:
-            favoritos.remove(product_id)
-            request.session['favoritos'] = favoritos
+        FavoritoCliente.objects.filter(id_usuario=request.user.id, id_producto=product_id).delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'message': 'Método no permitido.'})
+
+
+# Vistas CRUD para CategoriaProducto
+class CategoriaProductoListView(ListView):
+    model = CategoriaProducto
+    template_name = 'verdeLimonTemplates/crud/categoria_list.html'
+    context_object_name = 'categorias'
+
+class CategoriaProductoCreateView(CreateView):
+    model = CategoriaProducto
+    form_class = CategoriaProductoForm
+    template_name = 'verdeLimonTemplates/crud/categoria_form.html'
+    success_url = reverse_lazy('categoria_list')
+
+class CategoriaProductoUpdateView(UpdateView):
+    model = CategoriaProducto
+    form_class = CategoriaProductoForm
+    template_name = 'verdeLimonTemplates/crud/categoria_form.html'
+    success_url = reverse_lazy('categoria_list')
+
+class CategoriaProductoDeleteView(DeleteView):
+    model = CategoriaProducto
+    template_name = 'verdeLimonTemplates/crud/categoria_confirm_delete.html'
+    success_url = reverse_lazy('categoria_list')
+
+# Vistas CRUD para Direccion
+class DireccionListView(ListView):
+    model = Direccion
+    template_name = 'verdeLimonTemplates/crud/direccion_list.html'
+    context_object_name = 'direcciones'
+
+class DireccionCreateView(CreateView):
+    model = Direccion
+    form_class = DireccionForm
+    template_name = 'verdeLimonTemplates/crud/direccion_form.html'
+    success_url = reverse_lazy('direccion_list')
+
+class DireccionUpdateView(UpdateView):
+    model = Direccion
+    form_class = DireccionForm
+    template_name = 'verdeLimonTemplates/crud/direccion_form.html'
+    success_url = reverse_lazy('direccion_list')
+
+class DireccionDeleteView(DeleteView):
+    model = Direccion
+    template_name = 'verdeLimonTemplates/crud/direccion_confirm_delete.html'
+    success_url = reverse_lazy('direccion_list')
+
+# Vistas CRUD para CentroDistribucion
+class CentroDistribucionListView(ListView):
+    model = CentroDistribucion
+    template_name = 'verdeLimonTemplates/crud/centro_distribucion_list.html'
+    context_object_name = 'centros_distribucion'
+
+class CentroDistribucionCreateView(CreateView):
+    model = CentroDistribucion
+    form_class = CentroDistribucionForm
+    template_name = 'verdeLimonTemplates/crud/centro_distribucion_form.html'
+    success_url = reverse_lazy('centro_distribucion_list')
+
+class CentroDistribucionUpdateView(UpdateView):
+    model = CentroDistribucion
+    form_class = CentroDistribucionForm
+    template_name = 'verdeLimonTemplates/crud/centro_distribucion_form.html'
+    success_url = reverse_lazy('centro_distribucion_list')
+
+class CentroDistribucionDeleteView(DeleteView):
+    model = CentroDistribucion
+    template_name = 'verdeLimonTemplates/crud/centro_distribucion_confirm_delete.html'
+    success_url = reverse_lazy('centro_distribucion_list')
+
+# Vistas CRUD para Producto
+class ProductoListView(ListView):
+    model = Producto
+    template_name = 'verdeLimonTemplates/crud/producto_list.html'
+    context_object_name = 'productos'
+
+class ProductoCreateView(CreateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'verdeLimonTemplates/crud/producto_form.html'
+    success_url = reverse_lazy('producto_list')
+
+class ProductoUpdateView(UpdateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'verdeLimonTemplates/crud/producto_form.html'
+    success_url = reverse_lazy('producto_list')
+
+class ProductoDeleteView(DeleteView):
+    model = Producto
+    template_name = 'verdeLimonTemplates/crud/producto_confirm_delete.html'
+    success_url = reverse_lazy('producto_list')
+
+# Vistas CRUD para ProductoValorNutricional
+class ProductoValorNutricionalListView(ListView):
+    model = ProductoValorNutricional
+    template_name = 'verdeLimonTemplates/crud/producto_valor_nutricional_list.html'
+    context_object_name = 'valores_nutricionales'
+
+class ProductoValorNutricionalCreateView(CreateView):
+    model = ProductoValorNutricional
+    form_class = ProductoValorNutricionalForm
+    template_name = 'verdeLimonTemplates/crud/producto_valor_nutricional_form.html'
+    success_url = reverse_lazy('producto_valor_nutricional_list')
+
+class ProductoValorNutricionalUpdateView(UpdateView):
+    model = ProductoValorNutricional
+    form_class = ProductoValorNutricionalForm
+    template_name = 'verdeLimonTemplates/crud/producto_valor_nutricional_form.html'
+    success_url = reverse_lazy('producto_valor_nutricional_list')
+
+class ProductoValorNutricionalDeleteView(DeleteView):
+    model = ProductoValorNutricional
+    template_name = 'verdeLimonTemplates/crud/producto_valor_nutricional_confirm_delete.html'
+    success_url = reverse_lazy('producto_valor_nutricional_list')
+
+# Vistas CRUD para Inventario
+class InventarioListView(ListView):
+    model = Inventario
+    template_name = 'verdeLimonTemplates/crud/inventario_list.html'
+    context_object_name = 'inventarios'
+
+class InventarioCreateView(CreateView):
+    model = Inventario
+    form_class = InventarioForm
+    template_name = 'verdeLimonTemplates/crud/inventario_form.html'
+    success_url = reverse_lazy('inventario_list')
+
+class InventarioUpdateView(UpdateView):
+    model = Inventario
+    form_class = InventarioForm
+    template_name = 'verdeLimonTemplates/crud/inventario_form.html'
+    success_url = reverse_lazy('inventario_list')
+
+class InventarioDeleteView(DeleteView):
+    model = Inventario
+    template_name = 'verdeLimonTemplates/crud/inventario_confirm_delete.html'
+    success_url = reverse_lazy('inventario_list')
+
+# Vistas CRUD para HistorialInventario
+class HistorialInventarioListView(ListView):
+    model = HistorialInventario
+    template_name = 'verdeLimonTemplates/crud/historial_inventario_list.html'
+    context_object_name = 'historial_movimientos'
+
+class HistorialInventarioCreateView(CreateView):
+    model = HistorialInventario
+    form_class = HistorialInventarioForm
+    template_name = 'verdeLimonTemplates/crud/historial_inventario_form.html'
+    success_url = reverse_lazy('historial_inventario_list')
+
+class HistorialInventarioUpdateView(UpdateView):
+    model = HistorialInventario
+    form_class = HistorialInventarioForm
+    template_name = 'verdeLimonTemplates/crud/historial_inventario_form.html'
+    success_url = reverse_lazy('historial_inventario_list')
+
+class HistorialInventarioDeleteView(DeleteView):
+    model = HistorialInventario
+    template_name = 'verdeLimonTemplates/crud/historial_inventario_confirm_delete.html'
+    success_url = reverse_lazy('historial_inventario_list')
+
+
+# Vistas CRUD para ContactoCentro
+class ContactoCentroListView(ListView):
+    model = ContactoCentro
+    template_name = 'verdeLimonTemplates/crud/contacto_centro_list.html'
+    context_object_name = 'contactos_centros'
+
+class ContactoCentroCreateView(CreateView):
+    model = ContactoCentro
+    form_class = ContactoCentroForm
+    template_name = 'verdeLimonTemplates/crud/contacto_centro_form.html'
+    success_url = reverse_lazy('contacto_centro_list')
+
+class ContactoCentroUpdateView(UpdateView):
+    model = ContactoCentro
+    form_class = ContactoCentroForm
+    template_name = 'verdeLimonTemplates/crud/contacto_centro_form.html'
+    success_url = reverse_lazy('contacto_centro_list')
+
+class ContactoCentroDeleteView(DeleteView):
+    model = ContactoCentro
+    template_name = 'verdeLimonTemplates/crud/contacto_centro_confirm_delete.html'
+    success_url = reverse_lazy('contacto_centro_list')
+
+# Vistas CRUD para Proveedor
+class ProveedorListView(ListView):
+    model = Proveedor
+    template_name = 'verdeLimonTemplates/crud/proveedor_list.html'
+    context_object_name = 'proveedores'
+
+class ProveedorCreateView(CreateView):
+    model = Proveedor
+    form_class = ProveedorForm
+    template_name = 'verdeLimonTemplates/crud/proveedor_form.html'
+    success_url = reverse_lazy('proveedor_list')
+
+class ProveedorUpdateView(UpdateView):
+    model = Proveedor
+    form_class = ProveedorForm
+    template_name = 'verdeLimonTemplates/crud/proveedor_form.html'
+    success_url = reverse_lazy('proveedor_list')
+
+class ProveedorDeleteView(DeleteView):
+    model = Proveedor
+    template_name = 'verdeLimonTemplates/crud/proveedor_confirm_delete.html'
+    success_url = reverse_lazy('proveedor_list')
+
+# Vistas CRUD para FavoritoCliente
+class FavoritoClienteListView(ListView):
+    model = FavoritoCliente
+    template_name = 'verdeLimonTemplates/crud/favorito_cliente_list.html'
+    context_object_name = 'favoritos_clientes'
+
+class FavoritoClienteCreateView(CreateView):
+    model = FavoritoCliente
+    form_class = FavoritoClienteForm
+    template_name = 'verdeLimonTemplates/crud/favorito_cliente_form.html'
+    success_url = reverse_lazy('favorito_cliente_list')
+
+class FavoritoClienteUpdateView(UpdateView):
+    model = FavoritoCliente
+    form_class = FavoritoClienteForm
+    template_name = 'verdeLimonTemplates/crud/favorito_cliente_form.html'
+    success_url = reverse_lazy('favorito_cliente_list')
+
+class FavoritoClienteDeleteView(DeleteView):
+    model = FavoritoCliente
+    template_name = 'verdeLimonTemplates/crud/favorito_cliente_confirm_delete.html'
+    success_url = reverse_lazy('favorito_cliente_list')
+

@@ -1,0 +1,36 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Direcciones</h2>
+<a href="{% url 'direccion_add' %}" class="btn btn-primary mb-3">Agregar Dirección</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Calle</th>
+            <th>Ciudad</th>
+            <th>Región</th>
+            <th>País</th>
+            <th>Código Postal</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for direccion in direcciones %}
+        <tr>
+            <td>{{ direccion.id }}</td>
+            <td>{{ direccion.direccion_calle }}</td>
+            <td>{{ direccion.direccion_ciudad }}</td>
+            <td>{{ direccion.direccion_region }}</td>
+            <td>{{ direccion.direccion_pais }}</td>
+            <td>{{ direccion.direccion_codigo_postal }}</td>
+            <td>
+                <a href="{% url 'direccion_edit' direccion.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'direccion_delete' direccion.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

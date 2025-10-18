@@ -1,0 +1,30 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Inventario</h2>
+<a href="{% url 'inventario_add' %}" class="btn btn-primary mb-3">Agregar Inventario</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID Centro</th>
+            <th>ID Producto</th>
+            <th>Cantidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in inventarios %}
+        <tr>
+            <td>{{ item.id_centro.centro_nombre }}</td>
+            <td>{{ item.id_producto.producto_nombre }}</td>
+            <td>{{ item.inventario_cantidad }}</td>
+            <td>
+                <a href="{% url 'inventario_edit' item.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'inventario_delete' item.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

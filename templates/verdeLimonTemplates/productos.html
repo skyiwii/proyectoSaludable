@@ -1,75 +1,569 @@
+{% extends 'verdeLimonTemplates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Productos - Verde Limón</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/productos.css' %}">
-    <!-- Ícono pestaña -->
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-</head>
-<body>
-    <!-- Topbar -->
-    <div class="topbar">
-        ¡Bienvenido a Distribuidora Verde Limón! Productos frescos y saludables
-    </div>
-    
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <img src="{% static 'images/limon.png' %}" alt="Logo Verde Limón" class="logo-img">
-                <span>Distribuidora Verde Limón</span>
-            </div>
-            <ul>
-                <li><a href="{% url 'index' %}">Inicio</a></li>
-                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
-                <li><a href="{% url 'nosotros' %}">Sobre nosotros</a></li>
-                <li><a href="{% url 'contacto' %}">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <section class="products">
-        <h1>Nuestros Productos</h1>
-        <div class="product-list">
-            <div class="product-card">
-                <img src="{% static 'images/product1.png' %}" width="200" height="200" alt="Producto 1">
-                <h3>Pan de Centeno Integral</h3>
-                <p>Elaborado con granos enteros de centeno, rico en fibra y sabor autentico.</p>
-                <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
-                <button class="fav-btn">⭐Favorito</button>
+{% block title %}Productos - Verde Limón{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="productos-container">
+    <div class="productos-header">
+        <h1 class="productos-title">Nuestros Productos</h1>
+        <p class="productos-subtitle">Descubre nuestra selección de productos naturales y saludables</p>
+        
+        <!-- Filtros y búsqueda -->
+        <div class="productos-filters">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar productos..." class="search-input">
+                <i class="fas fa-search search-icon"></i>
             </div>
-            <div class="product-card">
-                <img src="{% static 'images/product2.png' %}" width="250" height="250" alt="Producto 2">
-                <h3>Barra Cereal Saludable</h3>
-                <p>Hecha con avena, miel y frutos secos, ideal como snack nutritivo y lleno de energia natural.</p>
-                <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
-                <button class="fav-btn">⭐Favorito</button>
-            </div>
-            <div class="product-card">
-                <img src="{% static 'images/product3.png' %}" width="250" height="250" alt="Producto 3">
-                <h3>Miel Natural</h3>
-                <p>Pura y sin aditivos, extraida para endulzar de forma sana y nutritiva.
-                    Miel natural, pura y 100% orgánica.</p>
-                <a href="https://wa.me/56912345678" class="btn">Cotizar</a>
-                <button class="fav-btn">⭐Favorito</button>
+            <div class="filter-container">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">Todas las categorías</option>
+                    {% for producto in productos %}
+                        {% if producto.id_categoria %}
+                            <option value="{{ producto.id_categoria.categoria_nombre }}">{{ producto.id_categoria.categoria_nombre }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
         </div>
-    </section>
-    <script>
-        const favButtons = document.querySelectorAll('.fav-btn');
+    </div>
 
-        favButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                button.classList.toggle('active');
-                if (button.classList.contains('active')) {
-                    button.textContent ="⭐ En Favoritos";
-                } else {
-                    button.textContent = "⭐ En Favoritos";
-                }
-            });
+    <div class="productos-grid" id="productosGrid">
+        {% for producto in productos %}
+        <div class="producto-card" data-nombre="{{ producto.producto_nombre|lower }}" data-categoria="{% if producto.id_categoria %}{{ producto.id_categoria.categoria_nombre }}{% endif %}">
+            <div class="producto-image-container">
+                {% if producto.producto_imagen %}
+                    <img src="{{ producto.producto_imagen.url }}" alt="{{ producto.producto_nombre }}" class="producto-image">
+                {% else %}
+                    <div class="producto-image-placeholder">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                {% endif %}
+                <div class="producto-badge">
+                    <span class="badge-natural">100% Natural</span>
+                </div>
+                {% if producto.id_categoria %}
+                <div class="producto-categoria">
+                    <span class="categoria-tag">{{ producto.id_categoria.categoria_nombre }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="producto-content">
+                <h3 class="producto-nombre">{{ producto.producto_nombre }}</h3>
+                <p class="producto-descripcion">{{ producto.producto_descripcion|default:"Producto natural de alta calidad" }}</p>
+                
+                <div class="producto-precio">
+                    <span class="precio-label">Precio Referencial:</span>
+                    <span class="precio-valor">${{ producto.producto_precio|floatformat:0 }}</span>
+                </div>
+
+                <!-- Información Nutricional Resumida -->
+                {% if producto.productovalornutricional_set.all %}
+                    {% for valor_nutricional in producto.productovalornutricional_set.all %}
+                    <div class="nutricional-resumen">
+                        <div class="nutricional-resumen-header">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Información Nutricional (por 100g)</span>
+                        </div>
+                        <div class="nutricional-resumen-grid">
+                            <div class="nutricional-mini">
+                                <span class="nutricional-mini-valor">{{ valor_nutricional.valor_calorias|default:"N/A" }}</span>
+                                <span class="nutricional-mini-label">kcal</span>
+                            </div>
+                            <div class="nutricional-mini">
+                                <span class="nutricional-mini-valor">{{ valor_nutricional.valor_proteinas|default:"N/A" }}g</span>
+                                <span class="nutricional-mini-label">Proteínas</span>
+                            </div>
+                            <div class="nutricional-mini">
+                                <span class="nutricional-mini-valor">{{ valor_nutricional.valor_carbohidratos|default:"N/A" }}g</span>
+                                <span class="nutricional-mini-label">Carbohidratos</span>
+                            </div>
+                            <div class="nutricional-mini">
+                                <span class="nutricional-mini-valor">{{ valor_nutricional.valor_grasas|default:"N/A" }}g</span>
+                                <span class="nutricional-mini-label">Grasas</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="producto-disponibilidad">
+                    <span class="disponibilidad-label">
+                        <i class="fas fa-store"></i> Disponible en:
+                    </span>
+                    {% for inventario in producto.inventario_set.all %}
+                        {% if inventario.inventario_cantidad > 0 %}
+                            <a href="/distribucion/?centro={{ inventario.id_centro.id_centro }}" class="centro-link">
+                                <i class="fas fa-map-marker-alt"></i>
+                                {{ inventario.id_centro.centro_nombre }} 
+                                <span class="cantidad-badge">{{ inventario.inventario_cantidad }} unidades</span>
+                            </a>
+                        {% endif %}
+                    {% empty %}
+                        <span class="no-disponible">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            No disponible actualmente
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Dropdown para Información Nutricional -->
+                {% if producto.productovalornutricional_set.all %}
+                <div class="info-nutricional-container">
+                    <button class="info-nutricional-toggle" onclick="toggleNutricional('{{ producto.id }}')">
+                        <span><i class="fas fa-chart-pie"></i> Información Nutricional</span>
+                        <i class="fas fa-chevron-down" id="chevron-{{ producto.id_producto }}"></i>
+                    </button>
+                    <div class="info-nutricional-content" id="nutricional-{{ producto.id }}">
+                        {% for valor_nutricional in producto.productovalornutricional_set.all %}
+                        <div class="nutricional-header">
+                            <span class="nutricional-subtitle">
+                                <i class="fas fa-info-circle"></i>
+                                Valores por 100g de producto
+                            </span>
+                        </div>
+                        <div class="nutricional-grid">
+                            <div class="nutricional-item">
+                                <span class="nutricional-label">
+                                    <i class="fas fa-fire"></i> Calorías:
+                                </span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_calorias|default:"N/A" }} kcal</span>
+                            </div>
+                            <div class="nutricional-item">
+                                <span class="nutricional-label">
+                                    <i class="fas fa-dumbbell"></i> Proteínas:
+                                </span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_proteinas|default:"N/A" }}g</span>
+                            </div>
+                            <div class="nutricional-item">
+                                <span class="nutricional-label">
+                                    <i class="fas fa-bread-slice"></i> Carbohidratos:
+                                </span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_carbohidratos|default:"N/A" }}g</span>
+                            </div>
+                            <div class="nutricional-item">
+                                <span class="nutricional-label">
+                                    <i class="fas fa-tint"></i> Grasas:
+                                </span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_grasas|default:"N/A" }}g</span>
+                            </div>
+                            <div class="nutricional-item">
+                                <span class="nutricional-label">
+                                    <i class="fas fa-seedling"></i> Fibra:
+                                </span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_fibra|default:"N/A" }}g</span>
+                            </div>
+                            <div class="nutricional-item">
+                                <span class="nutricional-label">
+                                    <i class="fas fa-cube"></i> Sodio:
+                                </span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_sodio|default:"N/A" }}mg</span>
+                            </div>
+                            <div class="nutricional-item">
+                                <span class="nutricional-label">
+                                    <i class="fas fa-candy-cane"></i> Azúcar:
+                                </span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_azucar|default:"N/A" }}g</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="producto-actions">
+                    <button class="btn-cotizar" onclick="cotizarProducto('{{ producto.producto_nombre }}')">
+                        <i class="fas fa-calculator"></i>
+                        Cotizar
+                    </button>
+                    
+                    {% if user.is_authenticated and user.usuario_rol == 'cliente' %}
+                        {% if producto.id in favoritos_ids %}
+                            <button class="btn-favorito favorito-activo" onclick="toggleFavorito('{{ producto.id }}', this)">
+                                <i class="fas fa-heart"></i>
+                                Favorito
+                            </button>
+                        {% else %}
+                            <button class="btn-favorito" onclick="toggleFavorito('{{ producto.id }}', this)">
+                                <i class="far fa-heart"></i>
+                                Agregar
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-productos">
+            <div class="no-productos-icon">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <h3>No hay productos disponibles</h3>
+            <p>Pronto tendremos nuevos productos naturales para ti.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+// Función para toggle de información nutricional
+function toggleNutricional(productoId) {
+    const content = document.getElementById(`nutricional-${productoId}`);
+    const chevron = document.getElementById(`chevron-${productoId}`);
+    
+    if (content.style.display === 'none' || content.style.display === '') {
+        content.style.display = 'block';
+        chevron.style.transform = 'rotate(180deg)';
+        content.style.animation = 'slideDown 0.3s ease-out';
+    } else {
+        content.style.display = 'none';
+        chevron.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Función para cotizar producto
+function cotizarProducto(nombreProducto) {
+    // Crear modal personalizado
+    const modal = document.createElement('div');
+    modal.className = 'cotizacion-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calculator"></i> Cotización para ${nombreProducto}</h3>
+                <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Para obtener una cotización personalizada de <strong>${nombreProducto}</strong>, por favor contáctanos:</p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <a href="https://wa.me/56912345678?text=Hola, me interesa obtener una cotización para ${nombreProducto}" target="_blank" class="whatsapp-link">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp: +56 9 1234 5678</span>
+                        </a>
+                    </div>
+                    <div class="contact-item">
+                        <a href="mailto:contacto@verdelimon.cl?subject=Cotización para ${nombreProducto}" class="email-link">
+                            <i class="fas fa-envelope"></i>
+                            <span>contacto@verdelimon.cl</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// Función para toggle de favoritos
+function toggleFavorito(productoId, button) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                     document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    if (!csrfToken) {
+        console.error('CSRF token not found');
+        alert('Error de seguridad. Por favor, recarga la página.');
+        return;
+    }
+
+    const isCurrentlyFavorite = button.classList.contains('favorito-activo');
+    const url = isCurrentlyFavorite ? '/remove-from-favorites/' : '/add-to-favorites/';
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `producto_id=${productoId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.added) {
+                button.innerHTML = '<i class="fas fa-heart"></i> Favorito';
+                button.classList.add('favorito-activo');
+            } else {
+                button.innerHTML = '<i class="far fa-heart"></i> Agregar';
+                button.classList.remove('favorito-activo');
+            }
+        } else {
+            alert(data.message || 'Error al actualizar favoritos.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al actualizar favoritos. Por favor, intenta nuevamente.');
+    });
+}
+
+// Funcionalidad de búsqueda y filtros
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar todos los dropdowns como cerrados
+    const contents = document.querySelectorAll('.info-nutricional-content');
+    contents.forEach(content => {
+        content.style.display = 'none';
+    });
+
+    // Funcionalidad de búsqueda
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const productCards = document.querySelectorAll('.producto-card');
+
+    function filterProducts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+
+        productCards.forEach(card => {
+            const productName = card.getAttribute('data-nombre');
+            const productCategory = card.getAttribute('data-categoria');
+            
+            const matchesSearch = productName.includes(searchTerm);
+            const matchesCategory = !selectedCategory || productCategory === selectedCategory;
+            
+            if (matchesSearch && matchesCategory) {
+                card.style.display = 'block';
+                card.style.animation = 'fadeIn 0.3s ease-in';
+            } else {
+                card.style.display = 'none';
+            }
         });
-    </script>
-</body>
-</html>
+    }
+
+    searchInput.addEventListener('input', filterProducts);
+    categoryFilter.addEventListener('change', filterProducts);
+
+    // Eliminar categorías duplicadas del filtro
+    const categoryOptions = Array.from(categoryFilter.options);
+    const uniqueCategories = [];
+    const seenCategories = new Set();
+    
+    categoryOptions.forEach(option => {
+        if (option.value && !seenCategories.has(option.value)) {
+            seenCategories.add(option.value);
+            uniqueCategories.push(option);
+        } else if (!option.value) {
+            uniqueCategories.push(option);
+        } else if (option.value && seenCategories.has(option.value)) {
+            option.remove();
+        }
+    });
+});
+</script>
+
+{% csrf_token %}
+
+<style>
+/* Estilos adicionales para las nuevas funcionalidades */
+.productos-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.search-container {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+}
+
+.filter-container {
+    min-width: 200px;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.categoria-tag {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.producto-categoria {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+.cantidad-badge {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+/* Modal para cotización */
+.cotizacion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.contact-info {
+    margin-top: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.contact-item i {
+    color: #10b981;
+    width: 20px;
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    text-align: right;
+}
+
+.btn-modal-close {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-modal-close:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .productos-filters {
+        flex-direction: column;
+    }
+    
+    .search-container, .filter-container {
+        max-width: none;
+    }
+}
+</style>
+{% csrf_token %}
+{% endblock %}

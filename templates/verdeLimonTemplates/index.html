@@ -1,215 +1,587 @@
+{% extends 'verdeLimonTemplates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Verde Limón</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="topbar">
-            <p>Distribuidora Verde Limón • Cotiza con nosotros al +56 9 1234 5678</p>
-        </div>
-        <nav class="navbar">
-            <div class="logo">
-                <img src="{% static 'images/limon.png' %}" alt="Logo Verde Limón" class="logo-img">
-                <span>Distribuidora Verde Limón</span>
-            </div>
-            <ul id="main-nav">
-                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
-                <li><a href="{% url 'nosotros' %}">Sobre Nosotros</a></li>
-                <li><a href="{% url 'contacto' %}">Contacto</a></li>
-            </ul>
-            <!-- Menú Usuario -->
-            <div class="user-menu">
-                <span id="welcome-msg" style="display:none;">Hola, <span id="user-name"></span>!</span>
-                <button id="logout-btn" onclick="logout()" style="display:none;">Cerrar Sesión</button>
-                <div class="dropdown" id="auth-dropdown">
-                    <button id="auth-btn">Login / Registro</button>
-                    <div class="dropdown-content" id="auth-form">
-                        <div id="login-section">
-                            <input type="text" id="login-username" placeholder="Usuario">
-                            <input type="password" id="login-password" placeholder="Contraseña">
-                            <button onclick="login()">Iniciar Sesión</button>
-                            <p class="message" id="login-msg"></p>
-                            <p style="font-size:12px; margin-top:6px;">¿No tienes cuenta? <a href="#" onclick="showRegisterDropdown()">Regístrate</a></p>
-                        </div>
-                        <div id="register-section" style="display:none;">
-                            <input type="text" id="reg-username" placeholder="Usuario">
-                            <input type="password" id="reg-password" placeholder="Contraseña">
-                            <input type="password" id="reg-password2" placeholder="Repetir Contraseña">
-                            <button onclick="register()">Registrar</button>
-                            <p class="message" id="reg-msg"></p>
-                            <p style="font-size:12px; margin-top:6px;">¿Ya tienes cuenta? <a href="#" onclick="showLoginDropdown()">Inicia Sesión</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
 
-    <!-- Hero -->
+{% block title %}Verde Limón - Productos Naturales{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* Homepage Styles */
+.hero {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    text-align: center;
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="20" cy="80" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.hero .btn {
+    background: white;
+    color: #059669;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.hero .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    color: #047857;
+}
+
+.search-hero {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-hero input {
+    width: 100%;
+    padding: 1rem 1.5rem 1rem 3rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.search-hero input:focus {
+    outline: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.search-hero button {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+/* Productos Recientes Section */
+.productos-recientes {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 3rem;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.producto-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+    position: relative;
+}
+
+.producto-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.producto-image-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%);
+}
+
+.producto-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.producto-card:hover .producto-image {
+    transform: scale(1.05);
+}
+
+.producto-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: white;
+    font-size: 3rem;
+}
+
+.producto-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(16, 185, 129, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.producto-content {
+    padding: 1.5rem;
+}
+
+.producto-nombre {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.producto-descripcion {
+    color: #6b7280;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.producto-precio {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.btn-ver-producto {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-ver-producto:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.ver-todos-productos {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.btn-ver-todos {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+}
+
+.btn-ver-todos:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Features Section */
+.features {
+    background: linear-gradient(135deg, #f8fffe 0%, #f0f9f4 100%);
+    padding: 4rem 2rem;
+    margin-top: 3rem;
+}
+
+.features-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 2rem;
+}
+
+.feature {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.feature h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.feature p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.feature .btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.feature .btn:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.no-productos {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.no-productos-icon {
+    font-size: 4rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.no-productos h3 {
+    font-size: 1.5rem;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.no-productos p {
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1.1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .productos-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .features {
+        padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 2rem 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .producto-content {
+        padding: 1rem;
+    }
+    
+    .feature {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    
     <section class="hero">
-        <h1>Calidad y confianza</h1>
-        <p>Somos líderes en distribución de productos naturales en Atacama.</p>
-        <a href="{% url 'distribucion' %}" class="btn">Ver Distribución</a>
-        <div class="search-hero">
-            <input type="text" placeholder="Buscar productos...">
-            <button>🔍</button>
-        </div>
-    </section>
-
-    <!-- Productos en tendencia -->
-    <section class="trending">
-        <h2>¡Revisa ya mismo nuestros productos!</h2>
-        <div class="trending-cards">
-            <div class="card">
-                <img src="{% static 'images/product1.png' %}" alt="Pan de Centeno Integral">
-                <h3>Pan de Centeno Integral</h3>
-                <a href="{% url 'productos' %}" class="btn-small">Ver producto</a>
-            </div>
-            <div class="card">
-                <img src="{% static 'images/product2.png' %}" alt="Barra Cereal Saludable">
-                <h3>Barra Cereal Saludable</h3>
-                <a href="{% url 'productos' %}" class="btn-small">Ver producto</a>
-            </div>
-            <div class="card">
-                <img src="{% static 'images/product3.png' %}" alt="Miel Natural">
-                <h3>Miel Natural</h3>
-                <a href="{% url 'productos' %}" class="btn-small">Ver producto</a>
+        <div class="hero-content">
+            <h1><i class="fas fa-leaf"></i> Calidad y Confianza</h1>
+            <p>Somos líderes en distribución de productos naturales en Atacama. Descubre nuestra amplia gama de productos saludables y naturales.</p>
+            <a href="{% url 'distribucion' %}" class="btn">
+                <i class="fas fa-map-marker-alt"></i>
+                Ver Distribución
+            </a>
+            <div class="search-hero">
+                <input type="text" placeholder="Buscar productos naturales..." id="heroSearch">
+                <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
             </div>
         </div>
     </section>
 
-    <!-- Features -->
-    <section class="features">
-        <div class="feature">
-            <h3>Distribución</h3>
-            <p>Red de centros logísticos para llegar a toda la región.</p>
-            <a href="{% url 'distribucion' %}" class="btn">Ver ubicaciones</a>
-        </div>
-
-        <div class="feature">
-            <h3>Sobre Nosotros</h3>
-            <p>Conoce más sobre nuestra historia y valores.</p>
-            <a href="{% url 'nosotros' %}" class="btn">Leer más</a>
+    <!-- Productos Recientes -->
+    {% if productos_recientes %}
+    <section class="productos-recientes">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                Productos Destacados
+            </h2>
+            <p class="section-subtitle">
+                Descubre nuestros productos más recientes y populares, cuidadosamente seleccionados para tu bienestar.
+            </p>
         </div>
         
-        <div class="feature">
-            <h3>Contacto</h3>
-            <p>Solicita tu cotización fácilmente.</p>
-            <a href="{% url 'contacto' %}" class="btn">Ver contactos</a>
+        <div class="productos-grid">
+            {% for producto in productos_recientes %}
+            <div class="producto-card">
+                <div class="producto-image-container">
+                    {% if producto.producto_imagen %}
+                        <img src="{{ producto.producto_imagen.url }}" alt="{{ producto.producto_nombre }}" class="producto-image">
+                    {% else %}
+                        <div class="producto-image-placeholder">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                    {% endif %}
+                    <div class="producto-badge">
+                        <i class="fas fa-certificate"></i> Nuevo
+                    </div>
+                </div>
+                
+                <div class="producto-content">
+                    <h3 class="producto-nombre">{{ producto.producto_nombre }}</h3>
+                    <p class="producto-descripcion">
+                        {{ producto.producto_descripcion|default:"Producto natural de alta calidad, perfecto para una vida saludable."|truncatewords:15 }}
+                    </p>
+                    
+                    {% if producto.producto_precio %}
+                    <div class="producto-precio">
+                        <i class="fas fa-tag"></i>
+                        Desde ${{ producto.producto_precio|floatformat:0 }}
+                    </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'productos' %}" class="btn-ver-producto">
+                        <i class="fas fa-eye"></i>
+                        Ver Detalles
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="ver-todos-productos">
+            <a href="{% url 'productos' %}" class="btn-ver-todos">
+                <i class="fas fa-th-large"></i>
+                Ver Todos los Productos
+            </a>
+        </div>
+    </section>
+    {% else %}
+    <section class="productos-recientes">
+        <div class="no-productos">
+            <div class="no-productos-icon">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <h3>Próximamente Nuevos Productos</h3>
+            <p>Estamos preparando una increíble selección de productos naturales para ti. ¡Mantente atento!</p>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-container">
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3>Distribución</h3>
+                    <p>Red de centros logísticos estratégicamente ubicados para llegar a toda la región de Atacama con la máxima eficiencia.</p>
+                    <a href="{% url 'distribucion' %}" class="btn">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Ver Ubicaciones
+                    </a>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Sobre Nosotros</h3>
+                    <p>Conoce más sobre nuestra historia, valores y compromiso con la calidad y la sostenibilidad en cada producto.</p>
+                    <a href="{% url 'nosotros' %}" class="btn">
+                        <i class="fas fa-info-circle"></i>
+                        Leer Más
+                    </a>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Productos</h3>
+                    <p>Explora nuestra amplia gama de productos naturales, orgánicos y saludables, cuidadosamente seleccionados para tu bienestar.</p>
+                    <a href="{% url 'productos' %}" class="btn">
+                        <i class="fas fa-shopping-bag"></i>
+                        Ver Productos
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Distribuidora Verde Limón | Todos los derechos reservados</p>
-    </footer>
+<script>
+function searchProducts() {
+    const searchTerm = document.getElementById('heroSearch').value;
+    if (searchTerm.trim()) {
+        
+        window.location.href = `{% url 'productos' %}?search=${encodeURIComponent(searchTerm)}`;
+    } else {
+        window.location.href = `{% url 'productos' %}`;
+    }
+}
 
-    <script>
-        // Dummy users
-        let USERS = {
-            'admin1': {password: '1234', role: 'admin'}, // Dummy data, esto se carga localmente para simular a los usuarios
-            'user1': {password: 'abcd', role: 'user'}
-        };
 
-        // Cargar usuario actual
-        const CURRENT_USER = JSON.parse(localStorage.getItem('CURRENT_USER'));
-        if(CURRENT_USER){
-            document.getElementById('welcome-msg').style.display = 'inline';
-            document.getElementById('user-name').textContent = CURRENT_USER.username;
-            document.getElementById('logout-btn').style.display = 'inline';
-            document.getElementById('auth-btn').style.display = 'none';
-            addDashboardLink();
-        }
+document.getElementById('heroSearch').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchProducts();
+    }
+});
 
-        function login(){
-            let u = document.getElementById('login-username').value;
-            let p = document.getElementById('login-password').value;
-            if(USERS[u] && USERS[u].password === p){
-                // guardo la info en localStorage como ya lo haces
-                localStorage.setItem('CURRENT_USER', JSON.stringify({username: u, role: USERS[u].role}));
 
-                // redirijo según el role existente en el objeto USERS
-                if (USERS[u].role === 'admin') {
-                    // Mandar al dashboard de admin (y el admin_dashboard acepta ?user_type=admin)
-                    window.location.href = "{% url 'dashboard' %}?user_type=admin";
-                    // alternativa directa: window.location.href = "{% url 'admin_dashboard' %}?user_type=admin";
-                } else {
-                    window.location.href = "{% url 'dashboard' %}?user_type=user";
-                    // alternativa directa: window.location.href = "{% url 'user_dashboard' %}?user_type=user";
-                }
-            } else {
-                document.getElementById('login-msg').textContent = 'Usuario o contraseña incorrectos';
-            }
-        }
-
-        function register(){
-            let u = document.getElementById('reg-username').value;
-            let p = document.getElementById('reg-password').value;
-            let p2 = document.getElementById('reg-password2').value;
-            if(!u || !p){
-                document.getElementById('reg-msg').textContent = 'Completa todos los campos.';
-                return;
-            }
-            if(p !== p2){
-                document.getElementById('reg-msg').textContent = 'Las contraseñas no coinciden.';
-                return;
-            }
-            if(USERS[u]){
-                document.getElementById('reg-msg').textContent = 'El usuario ya existe.';
-                return;
-            }
-            USERS[u] = {password: p, role: 'user'};
-            document.getElementById('reg-msg').textContent = '¡Usuario creado! Puede iniciar sesión.';
-        }
-
-        function logout(){
-            localStorage.removeItem('CURRENT_USER');
-            window.location.reload();
-        }
-
-        function addDashboardLink(){
-            const nav = document.getElementById('main-nav');
-            if(!document.getElementById('dashboard-link')){
-                const li = document.createElement('li');
-                li.id = 'dashboard-link';
-                const a = document.createElement('a');
-
-                // Leer al usuario actual desde localStorage
-                const currentUser = JSON.parse(localStorage.getItem('CURRENT_USER'));
-
-                if (currentUser && currentUser.role === 'admin') {
-                    a.href = "{% url 'admin_dashboard' %}?user_type=admin";
-                } else {
-                    a.href = "{% url 'user_dashboard' %}?user_type=user";
-                }
-
-                a.textContent = "Dashboard";
-                li.appendChild(a);
-                nav.appendChild(li);
-            }
-        }
-
-        function showRegisterDropdown(){
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('register-section').style.display = 'block';
-        }
-
-        function showLoginDropdown(){
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('register-section').style.display = 'none';
-        }
-
-        // Toggle dropdown
-        document.getElementById('auth-btn').addEventListener('click', function(){
-            const f = document.getElementById('auth-form');
-            f.style.display = f.style.display==='block' ? 'none':'block';
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
         });
-    </script>
-</body>
-</html>
+    });
+});
+</script>
+{% endblock %}
