@@ -1,78 +1,59 @@
+{% extends 'verdeLimonTemplates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Contacto - Green Limon</title>
-    <!-- CSS global -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <!-- CSS específico de contacto -->
-    <link rel="stylesheet" href="{% static 'css/contacto.css' %}">
-    <!-- Ícono pestaña -->
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <img src="{% static 'images/limon.png' %}" alt="Logo Green Limon" class="logo-img">
-                <span>Distribuidora Green Limon</span>
-            </div>
-            <ul>
-                <li><a href="{% url 'index' %}">Inicio</a></li>
-                <li><a href="{% url 'productos' %}">Productos</a></li>
-                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
-                <li><a href="{% url 'nosotros' %}">Sobre nosotros</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <!-- Contenedor específico para contacto -->
-    <section class="content contact-content">
-        <h1>Contáctanos</h1>
-        <p>Si tienes dudas o necesitas más información, puedes comunicarte con nosotros por los siguientes medios:</p>
-        
-        <!-- Botón de WhatsApp -->
-        <a href="https://wa.me/56912345678" target="_blank" class="btn">Escribir por WhatsApp</a>
-        
-        <!-- Teléfonos -->
-        <h2>Teléfonos</h2>
-        <p>+56 9 1234 5678</p>
-        <p>+52 2 1234 5678</p>
-        
-        <!-- Correo -->
-        <h2>Correo electrónico</h2>
-        <p>contacto@greenlimon.cl</p>
-        
-        <!-- Dirección física -->
-        <h2>Oficinas</h2>
-        <p>Encuéntranos en: Av. Atacama 1234, Centro, Copiapó, Región de Atacama, Chile </p>
-        <img src="{% static 'images/oficinas.jpg' %}" alt="Oficinas físicas">
-        
-        <!-- Horarios -->
-        <h2>Horarios de atención</h2>
-        <ul>
-            <li>Lunes a Viernes: 8:00 AM – 10:00 PM</li>
-            <li>Respuestas a correos: solo en días hábiles</li>
-            <li>Atención telefónica: mismo horario que oficinas físicas</li>
-        </ul>
+{% block title %}Contacto - Verde Limón{% endblock %}
 
-        <p>Responderemos tu consulta lo antes posible. ¡Gracias por confiar en nosotros!</p>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contacto.css' %}">
+{% endblock %}
 
-        <!-- Redes sociales -->
-        <h2>Redes sociales</h2>
-        <p>Síguenos en nuestras redes para no perderte ninguna novedad:</p>
-        <div class="social-links">
-            <a href="https://facebook.com" target="_blank">
-                <img src="{% static 'images/facebook.ico' %}" alt="Facebook"> Facebook
-            </a>
-            <a href="https://instagram.com" target="_blank">
-                <img src="{% static 'images/insta.ico' %}" alt="Instagram"> Instagram
-            </a>
-            <a href="https://t.me" target="_blank">
-                <img src="{% static 'images/telegram.ico' %}" alt="Telegram"> Telegram
-            </a>
-        </div>
-    </section>
-</body>
-</html>
+{% block content %}
+
+<section class="content contact-content">
+    <h1>Contáctanos</h1>
+    <p>Si tienes dudas o necesitas más información, puedes comunicarte con nosotros por los siguientes medios:</p>
+    
+    <!-- Botón de WhatsApp -->
+    <a href="https://wa.me/56912345678" target="_blank" class="btn">Escribir por WhatsApp</a>
+    
+    <!-- Teléfonos -->
+    <h2>Teléfonos</h2>
+    <p>+56 9 1234 5678</p>
+    <p>+52 2 1234 5678</p>
+    
+    <!-- Correo -->
+    <h2>Correo electrónico</h2>
+    <p>contacto@greenlimon.cl</p>
+    
+    <!-- Dirección física -->
+    <h2>Oficinas</h2>
+    <p>Encuéntranos en: Av. Atacama 1234, Centro, Copiapó, Región de Atacama, Chile </p>
+    <img src="{% static 'images/oficinas.jpg' %}" alt="Oficinas físicas">
+    
+    <!-- Horarios -->
+    <h2>Horarios de atención</h2>
+    <ul>
+        <li>Lunes a Viernes: 8:00 AM – 10:00 PM</li>
+        <li>Respuestas a correos: solo en días hábiles</li>
+        <li>Atención telefónica: mismo horario que oficinas físicas</li>
+    </ul>
+
+    <p>Responderemos tu consulta lo antes posible. ¡Gracias por confiar en nosotros!</p>
+
+    <!-- Redes sociales -->
+    <h2>Redes sociales</h2>
+    <p>Síguenos en nuestras redes para no perderte ninguna novedad:</p>
+    <div class="social-links">
+        <a href="https://facebook.com" target="_blank">
+            <img src="{% static 'images/facebook.ico' %}" alt="Facebook"> Facebook
+        </a>
+        <a href="https://instagram.com" target="_blank">
+            <img src="{% static 'images/insta.ico' %}" alt="Instagram"> Instagram
+        </a>
+        <a href="https://t.me" target="_blank">
+            <img src="{% static 'images/telegram.ico' %}" alt="Telegram"> Telegram
+        </a>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrador - Verde Limón</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            font-weight: 600 !important; /* igual que base */
+            letter-spacing: 0.3px; /* sutil como el index */
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+        }
+        .dashboard-header {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .sidebar {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:hover {
+            background-color: #e6ffe6;
+            color: #2e7d32;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+        }
+        .badge {
+            font-size: 0.75em;
+            padding: 0.5em 0.75em;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border-left: 4px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'index' %}">
+                <img src="{% static 'images/limon.png' %}" alt="Logo" width="30" height="30" class="me-2">
+                <span style="font-weight: 700; font-size: 1.1rem;">Distribuidora Verde Limón</span>
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{% url 'index' %}">Inicio</a>
+                <a class="nav-link" href="{% url 'productos' %}">Productos</a>
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
+                    <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <h1 class="mb-0">Dashboard Administrador</h1>
+            <p class="mb-0 opacity-75">Gestión completa del sistema</p>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'admin_dashboard' %}">
+                                Dashboard Overview
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'categoria_list' %}">
+                                Categorías de Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'producto_list' %}">
+                                Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'producto_valor_nutricional_list' %}">
+                                Valores Nutricionales
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'inventario_list' %}">
+                                Inventario
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'historial_inventario_list' %}">
+                                Historial de Movimientos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'centro_distribucion_list' %}">
+                                Centros de Distribución
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'direccion_list' %}">
+                                Direcciones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'contacto_centro_list' %}">
+                                Contactos de Centros
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'proveedor_list' %}">
+                                Proveedores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin:index' %}">
+                                Administrar Usuarios (Django Admin)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {% block admin_content %}
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Resumen del Dashboard</h1>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <h3 class="text-success">{{ total_productos }}</h3>
+                                <p class="mb-0">Productos Registrados</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <h3 class="text-success">{{ total_movimientos }}</h3>
+                                <p class="mb-0">Movimientos de Inventario</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <h3 class="text-success">{{ total_centros }}</h3>
+                                <p class="mb-0">Centros de Distribución</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Últimos Movimientos de Inventario</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Producto</th>
+                                                <th>Tipo</th>
+                                                <th>Cantidad</th>
+                                                <th>Usuario</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for movimiento in ultimos_movimientos %}
+                                            <tr>
+                                                <td>{{ movimiento.historial_fecha|date:"Y-m-d H:i" }}</td>
+                                                <td>{{ movimiento.id_inventario.id_producto.producto_nombre }}</td>
+                                                <td>
+                                                    {% if movimiento.historial_tipo_movimiento == 'agregar' %}
+                                                        <span class="badge bg-success">Entrada</span>
+                                                    {% elif movimiento.historial_tipo_movimiento == 'retirar' %}
+                                                        <span class="badge bg-danger">Salida</span>
+                                                    {% else %}
+                                                        <span class="badge bg-info">Traslado</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ movimiento.historial_cantidad }}</td>
+                                                <td>{{ movimiento.id_usuario.username }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted">No hay movimientos recientes</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock admin_content %}
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

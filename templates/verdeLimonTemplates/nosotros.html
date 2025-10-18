@@ -1,64 +1,48 @@
+{% extends 'verdeLimonTemplates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Nosotros - Green Limon</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/nosotros.css' %}">
-    <!-- Ícono pestaña -->
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <img src="{% static 'images/limon.png' %}" alt="Logo Green Limon" class="logo-img">
-                <span>Distribuidora Green Limon</span>
-            </div>
-            <ul>
-                <li><a href="{% url 'index' %}">Inicio</a></li>
-                <li><a href="{% url 'productos' %}">Productos</a></li>
-                <li><a href="{% url 'distribucion' %}">Distribución</a></li>
-                <li><a href="{% url 'contacto' %}">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <section class="content">
-        <h1>Sobre Nosotros</h1>
-        <p>
-            En <strong>Distribuidora Verde Limon</strong>, nuestra pasión es acercarte lo mejor de la naturaleza en cada producto.
-            Desde nuestros frutos secos seleccionados con cuidado hasta la miel más pura, nos comprometemos a ofrecer
-            opciones saludables que nutran tu cuerpo y tu vida. Nacimos con la mision de  promover hábitos de consumo
-            conscientes, respetando siempre la calidad y la sostenibilidad. Cada producto que ofrecemos refleja nuestro
-            compromiso con tu bienestar y con el planeta, porque creemos que una vida sana comienza con decisiones saludables.
-        </p>
+{% block title %}Nosotros - Verde Limón{% endblock %}
 
-        <h2>Objetivo</h2>
-        <p>
-            Nuestro objetivo es fomentar una alimentacion mas natrual y equilibrada, entregando productos saludables que
-            combinen tradicion, calidad y confianza para mejorar el bienestar de las familias.
-        </p>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/nosotros.css' %}">
+{% endblock %}
 
-        <h2>Nuestro Alcance</h2>
-        <p>
-            Actualmente distribuimos nuestros productos a nivel local y regional, con la meta de expandirnoss a nuevas comunidades
-            en todo el pais. Queremos que más personas puedan acceder a opciones saludables sin importar dónde vivan.
-        </p>
+{% block content %}
 
-        <h2>Nuestra Visión</h2>
-        <p>
-            Ser reconocidos como una empresa lider en la distribucion de productos saludables, contribuyendo a construir un futuro
-            más consciente, sostenible y lleno de vida.
-        </p>
+<section class="content">
+    <h1>Sobre Nosotros</h1>
+    <p>
+        En <strong>Distribuidora Verde Limon</strong>, nuestra pasión es acercarte lo mejor de la naturaleza en cada producto.
+        Desde nuestros frutos secos seleccionados con cuidado hasta la miel más pura, nos comprometemos a ofrecer
+        opciones saludables que nutran tu cuerpo y tu vida. Nacimos con la mision de promover hábitos de consumo
+        conscientes, respetando siempre la calidad y la sostenibilidad. Cada producto que ofrecemos refleja nuestro
+        compromiso con tu bienestar y con el planeta, porque creemos que una vida sana comienza con decisiones saludables.
+    </p>
 
-        <h2>Una Invitacion</h2>
-        <p>
-            Te invitamos a ser parte de nuestra comunidad, a elegir lo natural y saludable, y a acompañarnos  en este camino hacia
-            una vida más plena y equilibrada. En <strong>Verde Limon</strong>, creemos que cada decisión cuenta, y la tuya puede
-            marcar la diferencia.
-        </p>
-    </section>
-</body>
-</html>
+    <h2>Objetivo</h2>
+    <p>
+        Nuestro objetivo es fomentar una alimentacion mas natural y equilibrada, entregando productos saludables que
+        combinen tradicion, calidad y confianza para mejorar el bienestar de las familias.
+    </p>
+
+    <h2>Nuestro Alcance</h2>
+    <p>
+        Actualmente distribuimos nuestros productos a nivel local y regional, con la meta de expandirnos a nuevas comunidades
+        en todo el pais. Queremos que más personas puedan acceder a opciones saludables sin importar dónde vivan.
+    </p>
+
+    <h2>Nuestra Visión</h2>
+    <p>
+        Ser reconocidos como una empresa lider en la distribucion de productos saludables, contribuyendo a construir un futuro
+        más consciente, sostenible y lleno de vida.
+    </p>
+
+    <h2>Una Invitación</h2>
+    <p>
+        Te invitamos a ser parte de nuestra comunidad, a elegir lo natural y saludable, y a acompañarnos en este camino hacia
+        una vida más plena y equilibrada. En <strong>Verde Limón</strong>, creemos que cada decisión cuenta, y la tuya puede
+        marcar la diferencia.
+    </p>
+</section>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Historial de Movimientos de Inventario</h2>
+<a href="{% url 'historial_inventario_add' %}" class="btn btn-primary mb-3">Registrar Movimiento</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID Inventario</th>
+            <th>Usuario</th>
+            <th>Tipo de Movimiento</th>
+            <th>Centro Destino</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for movimiento in historial_movimientos %}
+        <tr>
+            <td>{{ movimiento.id_inventario.id_producto.producto_nombre }} en {{ movimiento.id_inventario.id_centro.centro_nombre }}</td>
+            <td>{{ movimiento.id_usuario.username }}</td>
+            <td>{{ movimiento.get_historial_tipo_movimiento_display }}</td>
+            <td>{% if movimiento.id_centro_destino %}{{ movimiento.id_centro_destino.centro_nombre }}{% else %}N/A{% endif %}</td>
+            <td>{{ movimiento.historial_cantidad }}</td>
+            <td>{{ movimiento.historial_fecha }}</td>
+            <td>
+                <a href="{% url 'historial_inventario_edit' movimiento.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'historial_inventario_delete' movimiento.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

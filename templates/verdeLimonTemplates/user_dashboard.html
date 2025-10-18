@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Usuario - Verde Limón</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .favorite-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        
+        .favorite-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .btn-remove {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-remove:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        
+        .empty-favorites {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+        
+        .empty-favorites i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+    </style>
+</head>
+<body>
+     <header>
+            <!-- Topbar -->
+        <div class="topbar">
+            ¡Bienvenido a Distribuidora Verde Limón! Productos frescos y saludables
+        </div>
+
+        <!-- NAVBAR IGUAL AL ADMIN -->
+        <nav class="navbar navbar-expand-lg" style="background: linear-gradient(135deg, #2e7d32, #4caf50); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div class="container">
+                <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'index' %}" style="color: white; font-weight: 700;">
+                    <img src="{% static 'images/limon.png' %}" alt="Logo" width="30" height="30" class="me-2">
+                    Distribuidora Verde Limón
+                </a>
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="{% url 'index' %}" style="color: white !important; font-weight: 600; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; letter-spacing: 0.3px;">Inicio</a>
+
+                    <a class="nav-link" href="{% url 'productos' %}" style="color: white !important; font-weight: 600; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; letter-spacing: 0.3px;">Productos</a>
+
+                    <a class="nav-link" href="{% url 'logout' %}" style="color: white !important; font-weight: 600; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; letter-spacing: 0.3px;">Cerrar Sesión</a>
+
+                 </div>
+            </div>
+        </nav>
+
+    </header>
+
+    <div class="dashboard-header">
+        <div class="container">
+            <h1>Mis Productos Favoritos</h1>
+            <p class="mb-0">Gestiona tus productos favoritos</p>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if productos_favoritos %}
+        <div class="row">
+            {% for favorito in productos_favoritos %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card favorite-card">
+                    {% if favorito.id_producto.producto_imagen %}
+                        <img src="{{ favorito.id_producto.producto_imagen.url }}" class="product-image card-img-top" alt="{{ favorito.id_producto.producto_nombre }}">
+                    {% else %}
+                        <img src="{% static 'images/product1.png' %}" class="product-image card-img-top" alt="{{ favorito.id_producto.producto_nombre }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ favorito.id_producto.producto_nombre }}</h5>
+                        <p class="card-text">{{ favorito.id_producto.producto_descripcion|default:"Sin descripción disponible"|truncatewords:15 }}</p>
+                        <div class="mb-2">
+                            <span class="badge bg-success">{{ favorito.id_producto.id_categoria.categoria_nombre }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <span class="h5 text-success mb-0">${{ favorito.id_producto.producto_precio_referencial|floatformat:0 }}</span>
+                            <button class="btn btn-remove btn-sm" onclick="removeFromFavorites({{ favorito.id_producto.id }})">
+                                Quitar ♥
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-favorites">
+            <div class="mb-4">
+                <i>💚</i>
+            </div>
+            <h3>No tienes productos favoritos aún</h3>
+            <p class="mb-4">Explora nuestros productos y agrega tus favoritos para verlos aquí</p>
+            <a href="{% url 'productos' %}" class="btn btn-success btn-lg">Ver Productos</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function removeFromFavorites(productId) {
+            fetch("{% url 'remove_from_favorites' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: 'product_id=' + productId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error al quitar de favoritos');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al quitar de favoritos');
+            });
+        }
+    </script>
+</body>
+</html>

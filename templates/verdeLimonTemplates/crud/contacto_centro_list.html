@@ -1,0 +1,30 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Contactos de Centros</h2>
+<a href="{% url 'contacto_centro_add' %}" class="btn btn-primary mb-3">Agregar Contacto de Centro</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Centro</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contacto in contactos_centros %}
+        <tr>
+            <td>{{ contacto.id_centro.centro_nombre }}</td>
+            <td>{{ contacto.get_contacto_tipo_display }}</td>
+            <td>{{ contacto.contacto_valor }}</td>
+            <td>
+                <a href="{% url 'contacto_centro_edit' contacto.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'contacto_centro_delete' contacto.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

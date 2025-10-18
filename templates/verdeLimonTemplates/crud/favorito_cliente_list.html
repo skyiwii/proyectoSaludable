@@ -1,0 +1,30 @@
+{% extends "verdeLimonTemplates/crud/base_crud.html" %}
+
+{% block crud_content %}
+<h2>Lista de Favoritos de Clientes</h2>
+<a href="{% url 'favorito_cliente_add' %}" class="btn btn-primary mb-3">Agregar Favorito</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Producto</th>
+            <th>Fecha Agregado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for favorito in favoritos_clientes %}
+        <tr>
+            <td>{{ favorito.id_usuario.username }}</td>
+            <td>{{ favorito.id_producto.producto_nombre }}</td>
+            <td>{{ favorito.fecha_agregado }}</td>
+            <td>
+                <a href="{% url 'favorito_cliente_edit' favorito.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'favorito_cliente_delete' favorito.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
