@@ -16,6 +16,7 @@ body {
     background: #f8fffe;
 >>>>>>> Stashed changes
     color: #333;
+    line-height: 1.6;
 }
 
 /* =======================
@@ -280,7 +281,6 @@ nav.navbar {
     z-index: 2;
 }
 
-/*Título 1 de la página principal*/
 .hero h1 {
     font-size: 3.5rem;
     color: #2e7d32;
@@ -288,7 +288,6 @@ nav.navbar {
     margin-bottom: 15px;
 }
 
-/*Parráfo de la página principal después del título*/
 .hero p {
     font-size: 18px;
 =======
@@ -330,8 +329,6 @@ nav.navbar {
     box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
 }
 
-
-/*Vista sobre el mouse del botón distribución*/
 .hero .btn:hover {
     background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
     transform: translateY(-3px);
@@ -457,7 +454,7 @@ nav.navbar {
     padding: 60px 20px;
     background: #f5f5f5;
 }
-/*Esto es para ver las funcionalidades, osea la parte final del índice para ir directamente a la opción que se quiera*/
+
 .feature {
     background: #fff;
     border-radius: 8px;

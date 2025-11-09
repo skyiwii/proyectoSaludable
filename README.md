@@ -4,7 +4,10 @@
 
 Proyecto Inicial para la empresa Green Limons centrada en la distribución de productos y sistema administrativo para empleados.
 
-Día 1:
+Aquellas acciones que tengan "**" son los más relevantes de ese dia.
+
+Cambios día 1:
+
 
 Acción 1:
 
@@ -38,7 +41,7 @@ Se modifico la pestaña de navegación de contacto.html para que quedase acorde 
 
 Acción 1.3:
 
-Se "modernizo" el aspecto general de la página en su styles.css (principal) y se reorganizo la página completa para más lógica como centro distributivo/tienda.
+**Se "modernizo" el aspecto general de la página en su styles.css (principal) y se reorganizo la página completa para más lógica como centro distributivo/tienda.
 
 Acción 1.4:
 
@@ -243,32 +246,3 @@ Acción 1.2:
 
 A este login se le agregó el dashboard que también está sujeto a cambios.
 
-
-Día 4:
-
--Se completo el contenido de la pagina nosotros.html con histroia, objetivos, vision, alcance e invitación de la empresa.
--se creó el archivo nosotros.css para aplicar un diseño personalizado con colores naturales enfocados en alimentación  saludable.
--se modifico productos.html:
-    -se añadieron imagenes de los productos (Pan de Centeno Integral, Barra  de Cereal Saludable y Miel Natural).
-    -Se incorporaron descripciones breves y botones de cotizacion.
-    -Se agregó un boton de '⭐ En Favoritos' en cada producto con funcionalidad visual.
--Se creo productos.css para dar estilo al catalogo de productos:
-    -Diseño en cuadricula responsiva con tarjetas uniformes.
-    -Colores cálidos y verdes naturales.
-    -Bordes visibles en imagenes y tarjetas.
-    -Estilo para el boton de favoritos con efecto de activación.
--Se implemento un script en productos.html para la funcionalidad de favoritos (marcar/desmarcar productos de forma visual)
-
-
-Día 5 (Final):
-
-
-Acción 1:
-
-Se implemento el crud para dashboard de usuarios (favoritos) y administradores (inventario de las distribuidoras/tiendas).
-
-# Usuarios ya creados dentro del sistema: 
-# admin1 1234 Para vista admin
-# user1 abcd Para vista usuario
-
-Para testear y probar el sistema

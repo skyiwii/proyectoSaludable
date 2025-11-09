@@ -22,7 +22,7 @@
             <td>{{ producto.producto_nombre }}</td>
             <td>{{ producto.producto_descripcion }}</td>
             <td>{{ producto.id_categoria.categoria_nombre }}</td>
-            <td>{{ producto.producto_precio_referencial }}</td>
+            <td>{{ producto.producto_precio }}</td>
             <td>{{ producto.get_producto_estado_display }}</td>
             <td>
                 <a href="{% url 'producto_edit' producto.pk %}" class="btn btn-sm btn-warning">Editar</a>

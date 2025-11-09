@@ -6,7 +6,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>ID Producto</th>
+            <th>Nombre Producto</th>
             <th>Calorías</th>
             <th>Proteínas</th>
             <th>Carbohidratos</th>
@@ -21,13 +21,13 @@
         {% for valor in valores_nutricionales %}
         <tr>
             <td>{{ valor.id_producto.producto_nombre }}</td>
-            <td>{{ valor.calorias }}</td>
-            <td>{{ valor.proteinas }}</td>
-            <td>{{ valor.carbohidratos }}</td>
-            <td>{{ valor.grasas }}</td>
-            <td>{{ valor.fibra }}</td>
-            <td>{{ valor.sodio }}</td>
-            <td>{{ valor.azucar }}</td>
+            <td>{{ valor.valor_calorias }}</td>
+            <td>{{ valor.valor_proteinas }}</td>
+            <td>{{ valor.valor_carbohidratos }}</td>
+            <td>{{ valor.valor_grasas }}</td>
+            <td>{{ valor.valor_fibra }}</td>
+            <td>{{ valor.valor_sodio }}</td>
+            <td>{{ valor.valor_azucar }}</td>
             <td>
                 <a href="{% url 'producto_valor_nutricional_edit' valor.pk %}" class="btn btn-sm btn-warning">Editar</a>
                 <a href="{% url 'producto_valor_nutricional_delete' valor.pk %}" class="btn btn-sm btn-danger">Eliminar</a>

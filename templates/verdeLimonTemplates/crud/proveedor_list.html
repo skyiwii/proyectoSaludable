@@ -3,6 +3,7 @@
 {% block crud_content %}
 <h2>Lista de Proveedores</h2>
 <a href="{% url 'proveedor_add' %}" class="btn btn-primary mb-3">Agregar Proveedor</a>
+
 <table class="table">
     <thead>
         <tr>
@@ -23,7 +24,18 @@
             <td>{{ proveedor.proveedor_rut }}</td>
             <td>{{ proveedor.proveedor_email }}</td>
             <td>{{ proveedor.proveedor_telefono }}</td>
-            <td>{{ proveedor.proveedor_direccion_id }}</td>
+
+            <!-- DIRECCIÓN COMPLETA -->
+            <td>
+                {{ proveedor.id_direccion.direccion_calle }},
+                {{ proveedor.id_direccion.direccion_ciudad }},
+                {{ proveedor.id_direccion.direccion_region }},
+                {{ proveedor.id_direccion.direccion_pais }}
+                {% if proveedor.id_direccion.direccion_codigo_postal %}
+                    ({{ proveedor.id_direccion.direccion_codigo_postal }})
+                {% endif %}
+            </td>
+
             <td>
                 <a href="{% url 'proveedor_edit' proveedor.pk %}" class="btn btn-sm btn-warning">Editar</a>
                 <a href="{% url 'proveedor_delete' proveedor.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
@@ -33,4 +45,3 @@
     </tbody>
 </table>
 {% endblock %}
-

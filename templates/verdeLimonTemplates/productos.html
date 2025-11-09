@@ -64,9 +64,15 @@
                     <span class="precio-valor">${{ producto.producto_precio|floatformat:0 }}</span>
                 </div>
 
+
+
+
+
+
+
                 <!-- Información Nutricional Resumida -->
-                {% if producto.productovalornutricional_set.all %}
-                    {% for valor_nutricional in producto.productovalornutricional_set.all %}
+                {% if producto.productovalornutricional %}
+                    {% with valor_nutricional=producto.productovalornutricional %}
                     <div class="nutricional-resumen">
                         <div class="nutricional-resumen-header">
                             <i class="fas fa-chart-pie"></i>
@@ -91,8 +97,15 @@
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
+                    {% endwith %}
                 {% endif %}
+
+
+
+
+
+
+
 
                 <div class="producto-disponibilidad">
                     <span class="disponibilidad-label">
@@ -100,7 +113,7 @@
                     </span>
                     {% for inventario in producto.inventario_set.all %}
                         {% if inventario.inventario_cantidad > 0 %}
-                            <a href="/distribucion/?centro={{ inventario.id_centro.id_centro }}" class="centro-link">
+                            <a href="/distribucion/?centro={{ inventario.id_centro.id }}" class="centro-link">
                                 <i class="fas fa-map-marker-alt"></i>
                                 {{ inventario.id_centro.centro_nombre }} 
                                 <span class="cantidad-badge">{{ inventario.inventario_cantidad }} unidades</span>
@@ -114,15 +127,22 @@
                     {% endfor %}
                 </div>
 
+
+
+
+
+
+
                 <!-- Dropdown para Información Nutricional -->
-                {% if producto.productovalornutricional_set.all %}
+                {% if producto.productovalornutricional %}
+                {% with valor_nutricional=producto.productovalornutricional %}
                 <div class="info-nutricional-container">
                     <button class="info-nutricional-toggle" onclick="toggleNutricional('{{ producto.id }}')">
-                        <span><i class="fas fa-chart-pie"></i> Información Nutricional</span>
-                        <i class="fas fa-chevron-down" id="chevron-{{ producto.id_producto }}"></i>
+                        <span><i class="fas fa-chart-pie"></i> Resumen Nutricional</span>
+                        <i class="fas fa-chevron-down" id="chevron-{{ producto.id }}"></i>
                     </button>
+
                     <div class="info-nutricional-content" id="nutricional-{{ producto.id }}">
-                        {% for valor_nutricional in producto.productovalornutricional_set.all %}
                         <div class="nutricional-header">
                             <span class="nutricional-subtitle">
                                 <i class="fas fa-info-circle"></i>
@@ -131,52 +151,47 @@
                         </div>
                         <div class="nutricional-grid">
                             <div class="nutricional-item">
-                                <span class="nutricional-label">
-                                    <i class="fas fa-fire"></i> Calorías:
-                                </span>
+                                <span class="nutricional-label"><i class="fas fa-fire"></i> Calorías:</span>
                                 <span class="nutricional-valor">{{ valor_nutricional.valor_calorias|default:"N/A" }} kcal</span>
                             </div>
                             <div class="nutricional-item">
-                                <span class="nutricional-label">
-                                    <i class="fas fa-dumbbell"></i> Proteínas:
-                                </span>
-                                <span class="nutricional-valor">{{ valor_nutricional.valor_proteinas|default:"N/A" }}g</span>
+                                <span class="nutricional-label"><i class="fas fa-dumbbell"></i> Proteínas:</span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_proteinas|default:"N/A" }} g</span>
                             </div>
                             <div class="nutricional-item">
-                                <span class="nutricional-label">
-                                    <i class="fas fa-bread-slice"></i> Carbohidratos:
-                                </span>
-                                <span class="nutricional-valor">{{ valor_nutricional.valor_carbohidratos|default:"N/A" }}g</span>
+                                <span class="nutricional-label"><i class="fas fa-bread-slice"></i> Carbohidratos:</span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_carbohidratos|default:"N/A" }} g</span>
                             </div>
                             <div class="nutricional-item">
-                                <span class="nutricional-label">
-                                    <i class="fas fa-tint"></i> Grasas:
-                                </span>
-                                <span class="nutricional-valor">{{ valor_nutricional.valor_grasas|default:"N/A" }}g</span>
+                                <span class="nutricional-label"><i class="fas fa-tint"></i> Grasas:</span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_grasas|default:"N/A" }} g</span>
                             </div>
                             <div class="nutricional-item">
-                                <span class="nutricional-label">
-                                    <i class="fas fa-seedling"></i> Fibra:
-                                </span>
-                                <span class="nutricional-valor">{{ valor_nutricional.valor_fibra|default:"N/A" }}g</span>
+                                <span class="nutricional-label"><i class="fas fa-seedling"></i> Fibra:</span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_fibra|default:"N/A" }} g</span>
                             </div>
                             <div class="nutricional-item">
-                                <span class="nutricional-label">
-                                    <i class="fas fa-cube"></i> Sodio:
-                                </span>
-                                <span class="nutricional-valor">{{ valor_nutricional.valor_sodio|default:"N/A" }}mg</span>
+                                <span class="nutricional-label"><i class="fas fa-cube"></i> Sodio:</span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_sodio|default:"N/A" }} mg</span>
                             </div>
                             <div class="nutricional-item">
-                                <span class="nutricional-label">
-                                    <i class="fas fa-candy-cane"></i> Azúcar:
-                                </span>
-                                <span class="nutricional-valor">{{ valor_nutricional.valor_azucar|default:"N/A" }}g</span>
+                                <span class="nutricional-label"><i class="fas fa-candy-cane"></i> Azúcar:</span>
+                                <span class="nutricional-valor">{{ valor_nutricional.valor_azucar|default:"N/A" }} g</span>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
+                {% endwith %}
                 {% endif %}
+
+
+
+
+
+
+
+
+
 
                 <div class="producto-actions">
                     <button class="btn-cotizar" onclick="cotizarProducto('{{ producto.producto_nombre }}')">
@@ -288,7 +303,7 @@ function toggleFavorito(productoId, button) {
             'X-CSRFToken': csrfToken,
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `producto_id=${productoId}`
+        body: `product_id=${productoId}`
     })
     .then(response => response.json())
     .then(data => {

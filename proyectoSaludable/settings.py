@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'proyectoSaludable.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'proyectoSaludable',
         'USER': 'root',
         'PASSWORD': 'root',

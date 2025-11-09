@@ -1,5 +1,9 @@
+# models.py
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, RegexValidator
+from django.core.exceptions import ValidationError
+
 
 class Usuario(AbstractUser):
     ROLES = (
@@ -22,15 +26,21 @@ class Usuario(AbstractUser):
 
 
 
+
 class Direccion(models.Model):
     direccion_calle = models.CharField(max_length=255)
     direccion_ciudad = models.CharField(max_length=100)
     direccion_region = models.CharField(max_length=100)
     direccion_pais = models.CharField(max_length=100)
-    direccion_codigo_postal = models.CharField(max_length=20, blank=True, null=True)
+    direccion_codigo_postal = models.CharField(
+        max_length=20,
+        blank=True, null=True,
+        validators=[RegexValidator(r'^\d+$', 'El código postal debe ser numérico')]
+    )
 
     def __str__(self):
         return f"{self.direccion_calle}, {self.direccion_ciudad}"
+
 
 class CategoriaProducto(models.Model):
     categoria_nombre = models.CharField(max_length=100)
@@ -46,7 +56,7 @@ class CentroDistribucion(models.Model):
         ("tienda", "Tienda"),
     )
     centro_nombre = models.CharField(max_length=100)
-    id_direccion = models.IntegerField(null=True, blank=True)  # antes era foreingKey(Direccion)
+    id_direccion = models.ForeignKey(Direccion, on_delete=models.CASCADE)
     centro_tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
     centro_descripcion = models.TextField(blank=True, null=True, help_text="Descripción de los productos que se venden en este centro")
     centro_imagen = models.ImageField(upload_to='centros_distribucion/', blank=True, null=True)
@@ -57,46 +67,70 @@ class CentroDistribucion(models.Model):
 class Producto(models.Model):
     producto_nombre = models.CharField(max_length=100)
     producto_descripcion = models.TextField(blank=True, null=True)
-    id_categoria = models.IntegerField(null=True, blank=True)  # antes era foreingKey(CategoriaProducto)
-    producto_precio = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0.00) # Added default value for new field, to avoid issues with existing data
-    ESTADO_CHOICES = (
-        ("activo", "Activo"),
-        ("inactivo", "Inactivo"),
+    id_categoria = models.ForeignKey(CategoriaProducto, on_delete=models.CASCADE)
+
+    producto_precio = models.DecimalField(
+        max_digits=10, decimal_places=2,
+        blank=True, null=True, default=0.00,
+        validators=[MinValueValidator(1)]
     )
+
+    ESTADO_CHOICES = (("activo", "Activo"), ("inactivo", "Inactivo"))
     producto_estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default="activo")
     producto_imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
-
 
     def __str__(self):
         return self.producto_nombre
 
-class ProductoValorNutricional(models.Model):
-    id_producto = models.IntegerField(null=True, blank=True)  # antes era onetoOneField(Producto)
-    valor_calorias = models.IntegerField(blank=True, null=True)
-    valor_proteinas = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    valor_carbohidratos = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    valor_grasas = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    valor_fibra = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    valor_sodio = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    valor_azucar = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
+class ProductoValorNutricional(models.Model):
+    id_producto = models.OneToOneField(Producto, on_delete=models.CASCADE, primary_key=True)
+
+    valor_calorias = models.IntegerField(
+        blank=True, null=True,
+        validators=[MinValueValidator(0)]
+    )
+    valor_proteinas = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        validators=[MinValueValidator(0)]
+    )
+    valor_carbohidratos = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        validators=[MinValueValidator(0)]
+    )
+    valor_grasas = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        validators=[MinValueValidator(0)]
+    )
+    valor_fibra = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        validators=[MinValueValidator(0)]
+    )
+    valor_sodio = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        validators=[MinValueValidator(0)]
+    )
+    valor_azucar = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True,
+        validators=[MinValueValidator(0)]
+    )
 
     def __str__(self):
-        # ya no podemos acceder a self.id_producto.producto_nomrbre porque no hay relacion
-        return f"Nutrición del producto {self.id_producto} ({self.valor_calorias or 0} kcal)"
+        kcal = f"{self.valor_calorias} kcal" if self.valor_calorias is not None else "s/ kcal"
+        return f"Nutrición de {self.id_producto.producto_nombre} ({kcal})"
+
 
 class Inventario(models.Model):
-    id_centro = models.IntegerField(null=True, blank=True)  # antes era foreingKey(CentroDistribucion)
-    id_producto = models.IntegerField(null=True, blank=True)  # antes era foreingKey(Producto)
-    inventario_cantidad = models.IntegerField()
+    id_centro = models.ForeignKey(CentroDistribucion, on_delete=models.CASCADE)
+    id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    inventario_cantidad = models.IntegerField(validators=[MinValueValidator(0)])
 
     class Meta:
-        # Ya no hay relaciones, pero mantenemos la restricción de unicidad de los IDs
         unique_together = ("id_centro", "id_producto")
 
     def __str__(self):
-        # ya no podemos acceder a los nombresd de los modelos relacionados
-        return f"Producto {self.id_producto} en centro {self.id_centro}"
+        return f"{self.id_producto.producto_nombre} en {self.id_centro.centro_nombre}"
+
 
 class HistorialInventario(models.Model):
     TIPO_MOVIMIENTO_CHOICES = (
@@ -104,16 +138,32 @@ class HistorialInventario(models.Model):
         ("retirar", "Retirar"),
         ("traslado", "Traslado"),
     )
-    id_inventario = models.IntegerField(null=True, blank=True)  # antes era foreingKey(Inventario)
-    id_usuario = models.IntegerField(null=True, blank=True)  # antes era foreingKey(Usuario)    
+    id_inventario = models.ForeignKey(Inventario, on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     historial_tipo_movimiento = models.CharField(max_length=10, choices=TIPO_MOVIMIENTO_CHOICES)
-    id_centro_destino = models.IntegerField(null=True, blank=True)  # antes era foreingKey(CentroDistribucion)
-    historial_cantidad = models.IntegerField()
+    id_centro_destino = models.ForeignKey(
+        CentroDistribucion, on_delete=models.SET_NULL,
+        blank=True, null=True, related_name="movimientos_destino"
+    )
+    historial_cantidad = models.IntegerField(validators=[MinValueValidator(1)])
     historial_fecha = models.DateTimeField(auto_now_add=True)
 
+    def clean(self):
+        # Validaciones de negocio a nivel de modelo
+        tipo = self.historial_tipo_movimiento
+        cant = self.historial_cantidad
+        inv = self.id_inventario
+
+        if tipo == "traslado" and not self.id_centro_destino:
+            raise ValidationError("Debe seleccionar un centro destino para movimientos de tipo traslado.")
+
+        if tipo == "retirar":
+            # Evitar retiros superiores al stock disponible
+            if inv and cant and cant > inv.inventario_cantidad:
+                raise ValidationError("No hay stock suficiente para retirar esa cantidad.")
+
     def __str__(self):
-        # ya no puede acceder a producto.nombre ni otras relaciones
-        return f"Movimiento de {self.historial_cantidad} unidades (Inventario {self.id_inventario})"
+        return f"Movimiento de {self.historial_cantidad} de {self.id_inventario.id_producto.producto_nombre}"
 
 
 
@@ -123,33 +173,51 @@ class ContactoCentro(models.Model):
         ("correo", "Correo"),
         ("whatsapp", "WhatsApp"),
     )
-    id_centro = models.IntegerField(null=True, blank=True)  # antes era foreingKey(CentroDistribucion) 
+    id_centro = models.ForeignKey(CentroDistribucion, on_delete=models.CASCADE)
     contacto_tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
     contacto_valor = models.CharField(max_length=255)
 
+    def clean(self):
+        valor = (self.contacto_valor or "").strip()
+        if self.contacto_tipo == "telefono" or self.contacto_tipo == "whatsapp":
+            # +56912345678 o 912345678 etc. (7 a 15 dígitos, opcional +)
+            phone_re = RegexValidator(
+                r'^(?:\+?56)?(?:9\d{8}|[2-9]\d{8})$',
+                'Ingrese un número chileno válido.'
+            )
+
+            phone_re(valor)
+        elif self.contacto_tipo == "correo":
+            from django.core.validators import EmailValidator
+            EmailValidator(message="Correo inválido.")(valor)
+
     def __str__(self):
-        # ya no podemos usar seld.id_centro.centro_nombre
-        return f"{self.contacto_tipo}: {self.contacto_valor} (Centro{self.id_centro})"
+        return f"{self.contacto_tipo}: {self.contacto_valor} ({self.id_centro.centro_nombre})"
+
+
 
 class Proveedor(models.Model):
     proveedor_nombre = models.CharField(max_length=100)
     proveedor_rut = models.CharField(max_length=12, unique=True, blank=True, null=True)
     proveedor_email = models.EmailField(max_length=100, blank=True, null=True)
-    proveedor_telefono = models.CharField(max_length=50, blank=True, null=True)
-    id_direccion = models.IntegerField(null=True, blank=True)  # antes era foreingKey(Direccion)
+    proveedor_telefono = models.CharField(
+        max_length=50, blank=True, null=True,
+        validators=[RegexValidator(r'^\+?\d{7,15}$', 'Número de teléfono inválido.')]
+    )
+    id_direccion = models.ForeignKey(Direccion, on_delete=models.SET_NULL, blank=True, null=True, related_name='proveedores')
 
     def __str__(self):
         return self.proveedor_nombre
 
+
 class FavoritoCliente(models.Model):
-    id_usuario = models.IntegerField(null=True, blank=True)  # antes era foreingKey(Usuario)
-    id_producto = models.IntegerField(null=True, blank=True)  # antes era foreingKey(Producto)
+    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     fecha_agregado = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("id_usuario", "id_producto") # sigue funcionando, pero con IDs simples
+        unique_together = ("id_usuario", "id_producto")
 
     def __str__(self):
-        # ya no podemos acceder a usuario_email ni producto_nombre
-        return f"favorito del usuario {self.id_usuario} - Prodcuto {self.id_producto}"
+        return f"{self.id_usuario.usuario_email} - {self.id_producto.producto_nombre}"
 
